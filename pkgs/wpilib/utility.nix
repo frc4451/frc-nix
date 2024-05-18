@@ -1,17 +1,17 @@
-{
-  stdenv,
-  allwpilibSources,
-  fetchurl,
-  autoPatchelfHook,
-  makeBinaryWrapper,
-  wrapGAppsHook,
-  ffmpeg,
-  mesa,
-  nss,
-  systemd,
-  wayland,
-  xdg-utils,
-  lib,
+{ stdenv
+, allwpilibSources
+, fetchurl
+, autoPatchelfHook
+, makeBinaryWrapper
+, wrapGAppsHook
+, ffmpeg
+, mesa
+, nss
+, systemd
+, wayland
+, xdg-utils
+, lib
+,
 }:
 stdenv.mkDerivation rec {
   pname = "wpilib-utility";
@@ -19,10 +19,10 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz";
-    hash = "sha256-A8a+gra0HcyCXf+uyTfAVYoOtvUULbCtN0dcBKdcDtY=";
+    hash = "sha256-Yhk9wXt/4Z05IyAntg9iixlV38w9KxuLyRIW6D+GW88=";
   };
 
-  nativeBuildInputs = [autoPatchelfHook makeBinaryWrapper wrapGAppsHook];
+  nativeBuildInputs = [ autoPatchelfHook makeBinaryWrapper wrapGAppsHook ];
 
   buildInputs = [
     ffmpeg

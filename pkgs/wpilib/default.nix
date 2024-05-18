@@ -2,12 +2,12 @@
 
 lib.makeScope pkgs.newScope (self: with self; {
   allwpilibSources = fetchFromGitHub rec {
-    passthru.version = "2024.3.1";
+    passthru.version = "2024.3.2";
 
     owner = "wpilibsuite";
     repo = "allwpilib";
     rev = "v${passthru.version}";
-    hash = "sha256-H/dMLI2wOiJ+/Z8//Q7QzAFc51dZ3L16evLJI1UaS8c=";
+    hash = "sha256-bxhAsxN0rVwXkTWZDUoTUEIfufbMqp8+OIU75xBUm6w=";
   };
 
   buildBinTool = callPackage ./build-bin-tool.nix { };

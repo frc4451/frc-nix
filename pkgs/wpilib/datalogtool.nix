@@ -6,10 +6,10 @@ buildBinTool {
   name = "DataLogTool";
 
   artifactHashes = {
-    linuxarm32 = "sha256-1LtRUFbGdStcW84TfZv3N6EWPMpz/QE56LWcsn3nx38=";
-    osxuniversal = "sha256-HIhhVN/y8EWysKwkXGlJ2a6ksLOWvxJ8kji2zOlDjuU=";
-    linuxarm64 = "sha256-ouuGBTnZHlL909o4YQ6uBp8o+SiwsknVl6P5gvdDXf0=";
-    linuxx86-64 = "sha256-wLWvtQtw+9l9WkhT1Ah9qAspbliPgJa4b2d63xFKURQ=";
+    linuxarm32 = "sha256-WvcdQNey68WLZnU4w8qivdwjuVAcATbBat9z2eRPWPE=";
+    linuxarm64 = "sha256-rEIFi3pYXvp4bUIyrRg2akx0ypp4xG5TDuMvtYNGMbg=";
+    linuxx86-64 = "sha256-ykWX4+j3jOb8d5UnRU2VxghQJPWn1GmqO4n3VsvcHic=";
+    osxuniversal = "sha256-QXJC/FNdRsspWKHyBBuE+oLj37Vvb6O0GH1yG1PkJKA=";
   };
 
   iconPng = "${allwpilibSources}/datalogtool/src/main/native/resources/dlt-512.png";
