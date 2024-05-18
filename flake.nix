@@ -55,7 +55,10 @@
                 robotbuilder
                 shuffleboard
                 smartdashboard
-                sysid;
+                sysid
+                vscode-wpilib
+                wpilib-utility
+                ;
 
               frc-nix-whitepaper =
                 pkgs.runCommandNoCC

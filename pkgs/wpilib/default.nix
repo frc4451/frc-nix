@@ -22,4 +22,7 @@ lib.makeScope pkgs.newScope (self: with self; {
   shuffleboard = callPackage ./shuffleboard.nix { };
   smartdashboard = callPackage ./smartdashboard.nix { };
   sysid = callPackage ./sysid.nix { };
+
+  wpilib-utility = callPackage ./utility.nix { };
+  vscode-wpilib = callPackage ./vscode-extension.nix { };
 })
