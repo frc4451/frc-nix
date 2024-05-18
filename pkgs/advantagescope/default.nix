@@ -29,7 +29,6 @@ appimageTools.wrapType2 {
   inherit pname version src;
 
   extraInstallCommands = ''
-    mv $out/bin/${pname}-${version} $out/bin/${pname}
     install -Dm 444 ${appimageContents}/${pname}.desktop "$out"/share/applications/${pname}.desktop
     install -Dm 444 ${icon} "$out"/share/pixmaps/advantagescope.png
 

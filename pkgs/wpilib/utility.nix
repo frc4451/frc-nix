@@ -3,7 +3,7 @@
 , fetchurl
 , autoPatchelfHook
 , makeBinaryWrapper
-, wrapGAppsHook
+, wrapGAppsHook3
 , ffmpeg
 , mesa
 , nss
@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
     hash = "sha256-Yhk9wXt/4Z05IyAntg9iixlV38w9KxuLyRIW6D+GW88=";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeBinaryWrapper wrapGAppsHook ];
+  nativeBuildInputs = [ autoPatchelfHook makeBinaryWrapper wrapGAppsHook3 ];
 
   buildInputs = [
     ffmpeg

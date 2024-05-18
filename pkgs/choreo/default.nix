@@ -27,7 +27,6 @@ appimageTools.wrapType2 {
   };
 
   extraInstallCommands = ''
-    mv $out/bin/${pname}-${version} $out/bin/${pname}
     install -D "${desktopItem}/share/applications/"* -t $out/share/applications/
     install -D ${icon} $out/share/pixmaps/choreo.svg
   '';
