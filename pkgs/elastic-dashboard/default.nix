@@ -1,11 +1,11 @@
 { lib
-, flutter
+, flutter319
 , fetchFromGitHub
 , copyDesktopItems
 , makeDesktopItem
 ,
 }:
-flutter.buildFlutterApplication rec {
+flutter319.buildFlutterApplication rec {
   pname = "elastic-dashboard";
   version = "2024.2.0";
 
