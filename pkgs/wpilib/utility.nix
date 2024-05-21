@@ -16,18 +16,10 @@ stdenv.mkDerivation rec {
   pname = "wpilib-utility";
   inherit (allwpilibSources) version;
 
-  src =
-    if stdenv.hostPlatform.isLinux then
-      fetchurl
-        {
-          url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz";
-          hash = "sha256-Yhk9wXt/4Z05IyAntg9iixlV38w9KxuLyRIW6D+GW88=";
-        }
-    else
-      fetchurl {
-        url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-mac.tar.gz";
-        hash = "sha256-puPcE1snS3ip4zgMtx5gJt7Z2+ucOs+f8pVWNHN9DFE=";
-      };
+  src = fetchurl {
+    url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz";
+    hash = "sha256-Yhk9wXt/4Z05IyAntg9iixlV38w9KxuLyRIW6D+GW88=";
+  };
 
   nativeBuildInputs = [ autoPatchelfHook makeBinaryWrapper wrapGAppsHook3 ];
 
@@ -35,8 +27,9 @@ stdenv.mkDerivation rec {
     ffmpeg
     mesa # for libgbm
     nss
+    systemd
     wayland
-  ] ++ lib.optionals stdenv.isLinux [ systemd ];
+  ];
 
   sourceRoot = ".";
   unpackCmd = "tar xzf \"$src\"";
@@ -67,6 +60,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/wpilibsuite/vscode-wpilib/tree/main/wpilib-utility-standalone";
     license = licenses.bsd3;
     maintainers = with maintainers; [ max-niederman ];
-    platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "aarch64-linux" "armv7l-linux" ];
+    platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" ];
   };
 }
