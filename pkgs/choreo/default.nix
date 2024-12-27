@@ -2,11 +2,11 @@
 
 let
   pname = "choreo";
-  version = "2024.2.2";
+  version = "2024.2.3";
 
   src = fetchurl {
     url = "https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64.AppImage";
-    hash = "sha256-z3IdlmKWubuzSnqok7HVXnVlmLAx6JJbdxww9rk93uw=";
+    hash = "sha256-Jwj5PW/Az11aHZFDPkt71WD1QH0xT8NqpYGAJnhjxhM=";
   };
 
   icon = fetchurl {
