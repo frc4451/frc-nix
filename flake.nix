@@ -1,23 +1,13 @@
 {
-  description = "Nix packages and NixOS modules for the FIRST Robotics Competition, maintained by team 3636.";
+  description = "Nix packages for the FIRST Robotics Competition, maintained by team 4451 (originally created by 3636).";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = inputs @ { self, flake-utils, nixpkgs }:
+  outputs = inputs:
     let
-      frcOverlay = final: prev: {
-        advantagescope = final.callPackage ./pkgs/advantagescope { };
-        choreo = final.callPackage ./pkgs/choreo { };
-        elastic-dashboard = final.callPackage ./pkgs/elastic-dashboard { };
-        pathplanner = final.callPackage ./pkgs/pathplanner { };
-        wpilib = final.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
-
-        vscode-extensions = prev.vscode-extensions // { wpilibsuite.vscode-wpilib = final.wpilib.vscode-wpilib; };
-      };
-
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -28,17 +18,28 @@
       ];
     in
     {
-      overlays.default = frcOverlay;
-      nixosModules.default = import ./modules inputs;
+      overlays.default = final: prev: {
+        advantagescope = final.callPackage ./pkgs/advantagescope { };
+        choreo = final.callPackage ./pkgs/choreo { };
+        elastic-dashboard = final.callPackage ./pkgs/elastic-dashboard { };
+        pathplanner = final.callPackage ./pkgs/pathplanner { };
+        wpilib = final.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
+
+        vscode-extensions = prev.vscode-extensions // { wpilibsuite.vscode-wpilib = final.wpilib.vscode-wpilib; };
+      };
     }
     //
-    (flake-utils.lib.eachSystem supportedSystems
+    (inputs.flake-utils.lib.eachSystem supportedSystems
       (system:
         let
-          pkgs = import nixpkgs { inherit system; overlays = [ frcOverlay ]; };
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ inputs.self.overlays.default ];
+          };
           inherit (pkgs) lib;
         in
         {
+          # Packages exposed through flake outputs
           packages = lib.attrsets.filterAttrs
             (_: pkg: builtins.elem system pkg.meta.platforms)
             {
@@ -61,23 +62,6 @@
                 vscode-wpilib
                 wpilib-utility
                 ;
-
-              frc-nix-whitepaper =
-                pkgs.runCommandNoCC
-                  "nixos-on-frc-robots"
-                  {
-                    buildInputs = with pkgs; [ typst source-serif ];
-                    TYPST_FONT_PATHS = nixpkgs.lib.strings.concatStringsSep ":" (with pkgs; [ montserrat libre-baskerville ]);
-
-                    meta.platforms = lib.platforms.all;
-                  }
-                  ''
-                    mkdir $out
-                    typst compile \
-                      --root ${./whitepaper} \
-                      ${./whitepaper}/nixos-on-frc-robots.typ \
-                      $out/nixos-on-frc-robots.pdf
-                  '';
             };
 
           formatter = pkgs.nixpkgs-fmt;
@@ -86,14 +70,7 @@
             name = "frc-nix";
             packages = with pkgs; [
               nushell
-              xxd
-
-              nixos-generators
-
-              typst
             ];
-
-            TYPST_FONT_PATHS = nixpkgs.lib.strings.concatStringsSep ":" (with pkgs; [ montserrat libre-baskerville ]);
           };
         }));
 }
