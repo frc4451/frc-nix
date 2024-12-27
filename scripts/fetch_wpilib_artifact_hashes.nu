@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
-# Example Usage: fetch_wpilib_artifact_hashes --version 2024.3.2
+# Example Usage: fetch_wpilib_artifact_hashes --repo {release,development} --version 2024.3.2
+# Would also suggest browsing: https://frcmaven.wpi.edu/ui/repos/tree/ to see how this works
 
 def get-artifact-hashes [basePath: string] {
     let folder = (http get $"https://frcmaven.wpi.edu/artifactory/api/storage/($basePath)" | from json)
@@ -38,8 +39,8 @@ def get-tool-hash [repo: string, tool: string, version: string] {
     get-artifact-hashes $"($repo)/edu/wpi/first/tools/($tool)/($version)"
 }
 
-def main [--version: string] {
-    for $it in [
+def main [--repo: string, --version: string] {
+    for $tool in [
         "DataLogTool"
         "Glass"
         "OutlineViewer"
@@ -49,7 +50,10 @@ def main [--version: string] {
         "Shuffleboard"
         "SmartDashboard"
         "SysId"] {
-        let hashes = (get-tool-hash "release" $it $version)
-        print $"($it):\n($hashes)\n"
+        let hashes = (get-tool-hash $repo $tool $version)
+        print $"($tool):\n($hashes)\n"
     }
+    print $"RobotBuilder \(Manual\):
+Just let it fail then put in the new one
+Available at for reference: https://frcmaven.wpi.edu/artifactory/($repo)/edu/wpi/first/tools/RobotBuilder/"
 }
