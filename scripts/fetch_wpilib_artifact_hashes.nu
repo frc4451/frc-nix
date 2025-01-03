@@ -4,7 +4,11 @@
 # Would also suggest browsing: https://frcmaven.wpi.edu/ui/repos/tree/ to see how this works
 
 def get-artifact-hashes [basePath: string] {
-    let folder = (http get $"https://frcmaven.wpi.edu/artifactory/api/storage/($basePath)" | from json)
+    let folder = try {
+        (http get $"https://frcmaven.wpi.edu/artifactory/api/storage/($basePath)" | from json)
+    } catch {
+        return $"Not found at ($basePath)"
+    }
     let children = (
         $folder.children
             | where not folder
@@ -26,7 +30,7 @@ def get-artifact-hashes [basePath: string] {
                 }
             }
             | where system != null
-            | insert hash { |row| nix hash to-sri --type sha256 $row.checksums.sha256 | str trim }
+            | insert hash { |row| nix hash convert --hash-algo sha256 --to sri $row.checksums.sha256 | str trim }
     )
 
     $artifacts
@@ -45,11 +49,13 @@ def main [--repo: string, --version: string] {
         "Glass"
         "OutlineViewer"
         "PathWeaver"
-        "roboRIOTeamNumberSetter"
         # "RobotBuilder" # Robot Builder doesn't follow the same format as everthing else so just do it manually
         "Shuffleboard"
         "SmartDashboard"
-        "SysId"] {
+        "SysId"
+        "roboRIOTeamNumberSetter"
+        "wpical"
+        ] {
         let hashes = (get-tool-hash $repo $tool $version)
         print $"($tool):\n($hashes)\n"
     }
