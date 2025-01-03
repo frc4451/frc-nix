@@ -7,3 +7,7 @@ result
 
 # Current SD Contents
 *.current-sd
+
+# Clojure
+.clj-kondo
+.lsp
