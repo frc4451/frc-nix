@@ -1,7 +1,6 @@
 { lib
 , allwpilibSources
 , stdenv
-, runCommand
 , fetchurl
 , unzip
 , autoPatchelfHook
@@ -9,7 +8,6 @@
 , makeDesktopItem
 , libGL
 , xorg
-, gnome
 }:
 
 { name
@@ -22,7 +20,8 @@
 , ...
 } @ args:
 let
-  inherit (allwpilibSources) version;
+  inherit (allwpilibSources) branch;
+  inherit (allwpilibSources.native) version;
 
   wpilibSystem =
     let
@@ -64,7 +63,7 @@ stdenv.mkDerivation ({
   inherit version;
 
   src = fetchurl {
-    url = "https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/tools/${name}/${version}/${name}-${version}-${wpilibSystem.os}${wpilibSystem.arch}.zip";
+    url = "https://frcmaven.wpi.edu/artifactory/${branch}/edu/wpi/first/tools/${name}/${version}/${name}-${version}-${wpilibSystem.os}${wpilibSystem.arch}.zip";
     hash = artifactHashes."${wpilibSystem.os}${wpilibSystem.arch}" or (throw "No hash for ${wpilibSystem.os}${wpilibSystem.arch}");
   };
 

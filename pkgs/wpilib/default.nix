@@ -1,8 +1,13 @@
 { pkgs, lib, fetchFromGitHub }:
 
 lib.makeScope pkgs.newScope (self: with self; {
-  allwpilibSources = fetchFromGitHub rec {
-    passthru.version = "2024.3.2";
+  allwpilibSources = fetchFromGitHub {
+    passthru = {
+      branch = "release";
+      version = "2024.3.2";
+      java.version = "2024.3.2";
+      native.version = "2024.3.2";
+    };
 
     owner = "wpilibsuite";
     repo = "allwpilib";

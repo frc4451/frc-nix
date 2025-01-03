@@ -5,7 +5,7 @@ stdenv.mkDerivation rec {
   inherit (allwpilibSources) version;
 
   src = fetchurl {
-    url = "https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/tools/RobotBuilder/${version}/RobotBuilder-${version}.jar";
+    url = "https://frcmaven.wpi.edu/artifactory/${allwpilibSources.branch}/edu/wpi/first/tools/RobotBuilder/${version}/RobotBuilder-${version}.jar";
     hash = "sha256-1uj2c5Ye56YKdu9DbnHKJHa2OUFcx/dY4cFKkR1QG1E=";
   };
 
