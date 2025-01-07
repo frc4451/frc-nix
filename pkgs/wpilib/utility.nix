@@ -59,7 +59,6 @@ stdenv.mkDerivation rec {
     description = "WPILib VSCode Utility (Standalone)";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib/tree/main/wpilib-utility-standalone";
     license = licenses.bsd3;
-    maintainers = with maintainers; [ max-niederman ];
     platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" ];
   };
 }

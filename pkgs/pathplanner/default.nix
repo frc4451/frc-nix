@@ -54,6 +54,5 @@ flutter326.buildFlutterApplication rec {
     homepage = "https://pathplanner.dev";
     license = licenses.mit;
     platforms = platforms.all;
-    maintainers = with maintainers; [ max-niederman ];
   };
 }

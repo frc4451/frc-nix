@@ -42,6 +42,5 @@ appimageTools.wrapType2 {
     license = licenses.mit;
     mainProgram = "advantagescope";
     platforms = [ "x86_64-linux" "aarch64-linux" ];
-    maintainers = with maintainers; [ max-niederman ];
   };
 }

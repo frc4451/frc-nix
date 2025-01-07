@@ -28,7 +28,6 @@ vscode-utils.buildVscodeExtension rec {
     description = "Visual Studio Code WPILib extension";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib";
     license = licenses.bsd3;
-    maintainers = with maintainers; [ max-niederman ];
     platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "aarch64-linux" "armv7l-linux" ];
   };
 }

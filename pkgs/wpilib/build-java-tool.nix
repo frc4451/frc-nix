@@ -110,6 +110,5 @@ stdenv.mkDerivation ({
   meta = (with lib; {
     platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-darwin" "aarch64-darwin" ];
     license = licenses.bsd3;
-    maintainers = with maintainers; [ max-niederman ];
   } // args.meta or { });
 } // removeAttrs args [ "name" "artifactHashes" "extraLibs" "meta" ])
