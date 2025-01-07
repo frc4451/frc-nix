@@ -1,24 +1,25 @@
 { lib
-, flutter319
+, flutter326
 , fetchFromGitHub
 , copyDesktopItems
 , stdenv
 , libuuid
 , makeDesktopItem
-,
 }:
-flutter319.buildFlutterApplication rec {
+flutter326.buildFlutterApplication rec {
   pname = "pathplanner";
-  version = "2024.1.7";
+  version = "2025.1.1+1";
 
   src = fetchFromGitHub {
     owner = "mjansen4857";
     repo = pname;
-    rev = version;
-    hash = "sha256-A8HGBpkO4xmUoWS5+Fz5IO81/G0NKI0pIemDgUFN9SY=";
+    # rev = "v${version}";
+    # the actual 2025.1.1 has the wrong barge colors
+    rev = "b45dbd1661518954b1456f96c691bf158d665a04";
+    hash = "sha256-ysNmCilmy2mYP/MW3/a1SVRWQuvZGDK3FkStPTEpSt4=";
   };
 
-  pubspecLock = lib.importJSON ./pubspec.lock.json;
+  autoPubspecLock = src + "/pubspec.lock";
 
   nativeBuildInputs = [ copyDesktopItems ];
 
@@ -28,7 +29,7 @@ flutter319.buildFlutterApplication rec {
   postUnpack = ''
     # Make the version shown in the GUI match the actual version instead of "0.0.0"
     substituteInPlace source/pubspec.yaml \
-      --replace "version: 0.0.0+1" "version: ${version}"
+      --replace-fail "version: 0.0.0+1" "version: ${version}"
   '';
 
   postInstall = ''
