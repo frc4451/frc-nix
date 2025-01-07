@@ -4,7 +4,8 @@
 , wrapGAppsHook3
 , lib
 , unzip
-,
+, makeDesktopItem
+, copyDesktopItems
 }:
 stdenv.mkDerivation rec {
   pname = "elastic-dashboard";
@@ -18,6 +19,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     autoPatchelfHook
     wrapGAppsHook3
+    copyDesktopItems
     unzip
   ];
 
@@ -31,6 +33,8 @@ stdenv.mkDerivation rec {
     mkdir -p "$out"/bin
     mkdir -p "$out"/opt/${pname}
 
+    install -Dm444 data/flutter_assets/assets/logos/logo.png "$out"/share/pixmaps/${pname}.png
+
     # copy over program files
     cp -r ./* "$out"/opt/${pname}
 
@@ -40,6 +44,18 @@ stdenv.mkDerivation rec {
 
     runHook postInstall
   '';
+
+  desktopItems = [
+    (makeDesktopItem {
+      desktopName = "Elastic";
+      name = pname;
+      exec = "elastic_dashboard";
+      icon = "/opt/${pname}/data/flutter_assets/assets/logos/logo.png";
+      comment = meta.description;
+      categories = [ "Development" ];
+      keywords = [ "FRC" "Dashboard" ];
+    })
+  ];
 
   meta = with lib; {
     mainProgram = "elastic_dashboard";
