@@ -1,18 +1,18 @@
 { pkgs, lib, fetchFromGitHub }:
 
 lib.makeScope pkgs.newScope (self: with self; {
-  allwpilibSources = fetchFromGitHub {
+  allwpilibSources = fetchFromGitHub rec {
     passthru = {
       branch = "release";
-      version = "2024.3.2";
-      java.version = "2024.3.2";
-      native.version = "2024.3.2";
+      version = "2025.1.1";
+      java.version = "2025.1.1";
+      native.version = "2025.1.1";
     };
 
     owner = "wpilibsuite";
     repo = "allwpilib";
     rev = "v${passthru.version}";
-    hash = "sha256-bxhAsxN0rVwXkTWZDUoTUEIfufbMqp8+OIU75xBUm6w=";
+    hash = "sha256-Txe4cREhx4z4pi2QsD05cs+V27prKYjvEPL6XTdYM8c=";
   };
 
   buildBinTool = callPackage ./build-bin-tool.nix { };
@@ -27,6 +27,7 @@ lib.makeScope pkgs.newScope (self: with self; {
   shuffleboard = callPackage ./shuffleboard.nix { };
   smartdashboard = callPackage ./smartdashboard.nix { };
   sysid = callPackage ./sysid.nix { };
+  wpical = callPackage ./wpical.nix { };
 
   wpilib-utility = callPackage ./utility.nix { };
   vscode-wpilib = callPackage ./vscode-extension.nix { };

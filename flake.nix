@@ -48,7 +48,7 @@
                 choreo
                 elastic-dashboard
                 pathplanner
-                photonvision;
+                ;
               inherit (pkgs.wpilib)
                 datalogtool
                 glass
@@ -59,6 +59,7 @@
                 shuffleboard
                 smartdashboard
                 sysid
+                wpical
                 vscode-wpilib
                 wpilib-utility
                 ;

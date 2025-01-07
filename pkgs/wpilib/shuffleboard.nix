@@ -6,11 +6,11 @@ buildJavaTool {
   name = "Shuffleboard";
 
   artifactHashes = {
-    linuxarm32 = "sha256-Ne8EbJ8QVazyLEtJe3VE5enYcuzLISEmUwAWhjkZqlU=";
-    linuxarm64 = "sha256-DiNvWeOF0HzEAMbb1DeYR8eGtmH+5ATxDPnvACPSWwQ=";
-    linuxx64 = "sha256-9o557w/jqztS2cSq9aBbUS54TGRikn6XAGfJPtfBGzE=";
-    macarm64 = "sha256-S6XjUaBp91Da09R03mBMrs7/DSRXfmUin/MQP6yyX38=";
-    macx64 = "sha256-IOKISk8Z1PZo/m2teBVV7kRUVslCOn11Di3TH7wGC8g=";
+    linuxarm32 = "sha256-yHevC+7MBXeqzLPrdRLkXe8UGj0ud+7K5Lq203NuRh8=";
+    linuxarm64 = "sha256-aSbRH/5j4lYdZ15ixNn8OrrmYsDHFOx3/YjNW0l+rGA=";
+    linuxx64 = "sha256-bBoOs/u3HTPde0EC4XQgmvOl0cDjqMkilv/HVRPVjwI=";
+    macarm64 = "sha256-F0Z0q4JtGeYzFlBewk/LGESTTLrVEGTpzc7Jj8Zw9Bg=";
+    macx64 = "sha256-rWCJso3zKTkOKyJBv+hhEhALZEq29nJgDDKugo178TM=";
   };
 
   iconSvg = ./wpilib_logo.svg;

@@ -12,7 +12,7 @@ vscode-utils.buildVscodeExtension rec {
 
   src = fetchurl {
     url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix";
-    hash = "sha256-4+u7X9pQF2CQC8EojNluiTlryDJh2KuQKyd4T1Tmz4w=";
+    hash = "sha256-9wGwROugMwm0VvpFpwS9tLslpsf1uxJQ5HFGOvFAAzo=";
     # The `*.vsix` file is in the end a simple zip file. Change the extension
     # so that existing `unzip` hooks takes care of the unpacking.
     name = "${name}.zip";

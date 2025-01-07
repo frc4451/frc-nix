@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation rec {
   pname = "robotbuilder";
-  inherit (allwpilibSources) version;
+  inherit (allwpilibSources.java) version;
 
   src = fetchurl {
     url = "https://frcmaven.wpi.edu/artifactory/${allwpilibSources.branch}/edu/wpi/first/tools/RobotBuilder/${version}/RobotBuilder-${version}.jar";
-    hash = "sha256-1uj2c5Ye56YKdu9DbnHKJHa2OUFcx/dY4cFKkR1QG1E=";
+    hash = "sha256-Ncm2QvDpaxpibofaocHTeFUYiXu3bQsBPUtZrJQFRiE=";
   };
 
   dontUnpack = true;

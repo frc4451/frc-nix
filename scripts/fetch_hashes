@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-branch="development"
+branch="release"
 native_version="2025.1.1"
 java_version="2025.1.1"
 
