@@ -25,7 +25,7 @@
     in
     {
       githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
-        checks = inputs.nixpkgs.lib.getAttrs [ "x86_64-linux" ];
+        checks = inputs.nixpkgs.lib.getAttrs [ "x86_64-linux" ] inputs.self.packages;
       };
 
       overlays.default = final: prev: {
