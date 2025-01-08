@@ -1,17 +1,26 @@
 # A NixOS Distribution for FRC
 
-This repository contains Nix packages and NixOS modules for use in the FIRST Robotics Competition.
+This repository contains Nix packages for use in the FIRST Robotics Competition.
 
 Try it out by running a development tool
 
-```bash
-nix registry add frc-nix github:FRC3636/frc-nix
-
-nix run frc-nix#choreo # or glass, pathplanner, datalogtool, etc.
+```sh
+nix run github:frc4451/frc-nix#sysid # or glass, pathplanner, datalogtool, etc.
 ```
+# Why doesn't my Simulation GUI work?
+The simgui in WPILib is kinda weird. For Java a couple prerequisites must be met for it to launch:
+## 1) Proper JDK
+You must be using the proper JDK which is normally the JDK that comes in the WPILib installer, sadly it is not currently packaged by this project. Once you have it installed, set `$JAVA_HOME` to it's location, from your shell `export JAVA_HOME="$HOME"/wpilib/2025/jdk/` should normally suffice.
+## 2) Simgui Enabled
 
-or taking a look at [the example project](./example).
-
-## Binary Cache
-
-We use [Garnix](https://garnix.io) for CI, so you can follow the directions at [Garnix's docs](https://garnix.io/docs/caching) to download pre-built versions of frc-nix's packages.
+* `$HALSIM_EXTENSIONS` must be set to a valid `libhalsim_gui.so`.
+* One can be found in the `build/` folder of your repository.
+* Alternatively add `wpi.sim.addGui().defaultEnabled = true` to your `build.gradle`
+## 3) Env Setup
+You can either set these up in your shell by sourcing a script similar to the one below (this script assumes that you are in the root of your project directory when being ran) or mak
+```sh
+export HALSIM_EXTENSIONS="$PWD"/build/jni/release/libhalsim_gui.so # if not setting up build.gradle
+export JAVA_HOME="$HOME"/wpilib/2025/jdk/
+```
+## 4) 🎉
+`./gradlew simulateJava`
