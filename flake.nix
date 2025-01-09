@@ -3,7 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     flake-utils.url = "github:numtide/flake-utils";
+
+    nix-github-actions = {
+      url = "github:nix-community/nix-github-actions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
@@ -18,6 +24,10 @@
       ];
     in
     {
+      githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
+        checks = inputs.nixpkgs.lib.getAttrs [ "x86_64-linux" ] inputs.self.packages;
+      };
+
       overlays.default = final: prev: {
         advantagescope = final.callPackage ./pkgs/advantagescope { };
         choreo = final.callPackage ./pkgs/choreo { };
