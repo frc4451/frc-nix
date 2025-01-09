@@ -50,7 +50,7 @@ stdenv.mkDerivation rec {
       desktopName = "Elastic";
       name = pname;
       exec = "elastic_dashboard";
-      icon = "/opt/${pname}/data/flutter_assets/assets/logos/logo.png";
+      icon = pname;
       comment = meta.description;
       categories = [ "Development" ];
       keywords = [ "FRC" "Dashboard" ];
