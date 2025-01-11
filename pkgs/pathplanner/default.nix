@@ -8,15 +8,13 @@
 }:
 flutter326.buildFlutterApplication rec {
   pname = "pathplanner";
-  version = "2025.1.1+1";
+  version = "2025.2.1";
 
   src = fetchFromGitHub {
     owner = "mjansen4857";
     repo = pname;
-    # rev = "v${version}";
-    # the actual 2025.1.1 has the wrong barge colors
-    rev = "b45dbd1661518954b1456f96c691bf158d665a04";
-    hash = "sha256-ysNmCilmy2mYP/MW3/a1SVRWQuvZGDK3FkStPTEpSt4=";
+    rev = "v${version}";
+    hash = "sha256-FRHvE+PpWGWtXOeSlH4WLzrpNkjm74NtDUmt273BXAs=";
   };
 
   autoPubspecLock = src + "/pubspec.lock";
