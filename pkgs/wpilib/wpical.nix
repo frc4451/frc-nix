@@ -6,8 +6,8 @@ buildBinTool {
   name = "wpical";
 
   artifactHashes = {
-    linuxx86-64 = "sha256-y0puhD3QI1/+iqgK69mBgEsi+vXvSO3HM1pdNtTq++8=";
-    osxuniversal = "sha256-8dirw4D4vOMlbe3q9qjO66WrZKV2qPQiG3sOLAplEKk=";
+    linuxx86-64 = "sha256-efdktL1NecGHQ5U6kp8x1/Vg3kJRmOyCZA/35y+EyP8=";
+    osxuniversal = "sha256-L5g43PkPQCip3AFuGoZ21VktQ0rvagNKgEqxDMp6SQw=";
   };
 
   extraLibs = [ gfortran.cc ];

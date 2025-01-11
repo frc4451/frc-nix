@@ -6,8 +6,8 @@ buildJavaTool {
   name = "SmartDashboard";
 
   artifactHashes = {
-    linuxx64 = "sha256-8rFIsTsvDE+3paLNwbFEZR8NxhpTYd03YjvK7ZJrTKU=";
-    macx64 = "sha256-uftL4tQAdZsx/5tcGJqHEselvGHca5a+06IQlQGISGw=";
+    linuxx64 = "sha256-M6OIhWTQ6xsZ3NNrYaSFrRHp8ZPkHMEY1qa3JciZpu4=";
+    macx64 = "sha256-rk7qa98BbJOgicD0gREhmHNdamOS7zITwc4V1LmIBtE=";
   };
 
   iconSvg = ./wpilib_logo.svg;
