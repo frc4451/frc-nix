@@ -71,12 +71,12 @@ async function fetchHashes() {
     // Extract platform name, handling windowsx86-64 case
     let platform = file.uri.slice(file.uri.lastIndexOf("-") + 1, -4);
     // Special case for windowsx86-64
-    if (file.uri.includes("windowsx86-64")) {
-      platform = "windowsx86-64";
-    } else if (file.uri.includes("linuxx86-64")) {
-      platform = "linux86-64";
-    } else if (tool === "RobotBuilder") platform = "all";
-    hashes[platform] = data.checksums.sha256;
+    if (file.uri.includes("linuxx86-64")) platform = "linux86-64";
+    else if (tool === "RobotBuilder") platform = "all";
+    else if (file.uri.includes("windows")) continue;
+
+    hashes[platform] =
+      `sha256-${Buffer.from(data.checksums.sha256, "hex").toString("base64")}`;
   }
 
   // Format output
