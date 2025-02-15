@@ -11,6 +11,8 @@ native_tools=(
     "SysId"
     "roboRIOTeamNumberSetter"
     "wpical"
+    "wpilibutility"
+    "vscode-extension"
 )
 
 java_tools=(

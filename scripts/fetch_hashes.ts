@@ -53,40 +53,70 @@ async function fetchHashes() {
 
   const { tool, branch, version } = values;
 
-  const programUrl = `https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}`;
-  const programResponse = (await (
-    await fetch(programUrl)
-  ).json()) as ProgramResponse;
-  const files = programResponse.children.filter(
-    (file) => !file.uri.endsWith(".pom"),
-  );
+  switch (tool) {
+    case "wpilibutility": {
+      const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz`;
+      const response = await fetch(url);
+      const data = await response.arrayBuffer();
+      const hash = `sha256-${Buffer.from(await crypto.subtle.digest("SHA-256", data)).toString("base64")}`;
 
-  const hashes: Record<string, string> = {};
+      console.log(`wpilibutility (${version}):`);
+      console.log("artifactHashes = {");
+      console.log(`  linux = "${hash}";`);
+      console.log("};");
+      console.log();
+      break;
+    }
+    case "vscode-extension": {
+      const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix`;
+      const response = await fetch(url);
+      const data = await response.arrayBuffer();
+      const hash = `sha256-${Buffer.from(await crypto.subtle.digest("SHA-256", data)).toString("base64")}`;
 
-  for (const file of files) {
-    const fileUrl = `https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}${file.uri}`;
-    const response = await fetch(fileUrl);
-    const data = (await response.json()) as FileResponse;
+      console.log(`vscode-extension (${version}):`);
+      console.log("artifactHashes = {");
+      console.log(`  linux = "${hash}";`);
+      console.log("};");
+      console.log();
+      break;
+    }
+    default: {
+      const programUrl = `https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}`;
+      const programResponse = (await (
+        await fetch(programUrl)
+      ).json()) as ProgramResponse;
+      const files = programResponse.children.filter(
+        (file) => !file.uri.endsWith(".pom"),
+      );
 
-    // Extract platform name, handling windowsx86-64 case
-    let platform = file.uri.slice(file.uri.lastIndexOf("-") + 1, -4);
-    // Special case for windowsx86-64
-    if (file.uri.includes("linuxx86-64")) platform = "linux86-64";
-    else if (tool === "RobotBuilder") platform = "all";
-    else if (file.uri.includes("windows")) continue;
+      const hashes: Record<string, string> = {};
 
-    hashes[platform] =
-      `sha256-${Buffer.from(data.checksums.sha256, "hex").toString("base64")}`;
+      for (const file of files) {
+        const fileUrl = `https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}${file.uri}`;
+        const response = await fetch(fileUrl);
+        const data = (await response.json()) as FileResponse;
+
+        // Extract platform name, handling windowsx86-64 case
+        let platform = file.uri.slice(file.uri.lastIndexOf("-") + 1, -4);
+        // Special case for windowsx86-64
+        if (file.uri.includes("linuxx86-64")) platform = "linux86-64";
+        else if (tool === "RobotBuilder") platform = "all";
+        else if (file.uri.includes("windows")) continue;
+
+        hashes[platform] =
+          `sha256-${Buffer.from(data.checksums.sha256, "hex").toString("base64")}`;
+      }
+
+      // Format output
+      console.log(`${tool} (${version}):`);
+      console.log("artifactHashes = {");
+      for (const [platform, hash] of Object.entries(hashes)) {
+        console.log(`  ${platform} = "${hash}";`);
+      }
+      console.log("};");
+      console.log();
+    }
   }
-
-  // Format output
-  console.log(`${tool} (${version}):`);
-  console.log("artifactHashes = {");
-  for (const [platform, hash] of Object.entries(hashes)) {
-    console.log(`  ${platform} = "${hash}";`);
-  }
-  console.log("};");
-  console.log();
 }
 
 fetchHashes().catch(console.error);
