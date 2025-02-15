@@ -6,7 +6,7 @@ buildBinTool {
   name = "wpical";
 
   artifactHashes = {
-    linux86-64 = "sha256-YZC/Hm9FrdQdq17QjOwuvhJP1ZQz74x6x2P8OeQwvxA=";
+    linuxx86-64 = "sha256-YZC/Hm9FrdQdq17QjOwuvhJP1ZQz74x6x2P8OeQwvxA=";
     osxuniversal = "sha256-WrMbkEyCtjmjUN7h/uG/mMG33uIKtAEcPr1u3luKiJg=";
   };
 

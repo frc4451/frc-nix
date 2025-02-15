@@ -7,7 +7,7 @@ buildBinTool {
 
   artifactHashes = {
     linuxarm32 = "sha256-JLNucSwiAtLCV+IXKchx9PVkYEEMLgnLMlvD9YoCDe0=";
-    linux86-64 = "sha256-WSaCCcQlKoJ8prNLqNUlBZhIOvpynUzwV6CYNtameJw=";
+    linuxx86-64 = "sha256-WSaCCcQlKoJ8prNLqNUlBZhIOvpynUzwV6CYNtameJw=";
     linuxarm64 = "sha256-T3Pc4NWK7rTN5V0hobUqq2c1lxxACai3vcWLWMHV/ME=";
     osxuniversal = "sha256-cXP40rpfDtQPsDFrdtBB7d9YfxywCol6ec9ccJZgkt0=";
   };
