@@ -41,6 +41,13 @@ export interface Checksums {
   sha256: string;
 }
 
+async function fetchHash(url: string) {
+  const response = await fetch(url);
+  const data = await response.arrayBuffer();
+  const hashArray = new Uint8Array(await crypto.subtle.digest("SHA-256", data));
+  return `sha256-${btoa(String.fromCharCode(...hashArray))}`;
+}
+
 async function fetchHashes() {
   const { values } = parseArgs({
     options: {
@@ -51,33 +58,68 @@ async function fetchHashes() {
     },
   });
 
-  const { tool, branch, version } = values;
+  const { tool, branch, version, type } = values;
 
-  switch (tool) {
-    case "wpilibutility": {
-      const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz`;
-      const response = await fetch(url);
-      const data = await response.arrayBuffer();
-      const hash = `sha256-${Buffer.from(await crypto.subtle.digest("SHA-256", data)).toString("base64")}`;
+  const hashes: Record<string, string> = {};
 
-      console.log(`wpilibutility (${version}):`);
-      console.log("artifactHashes = {");
-      console.log(`  linux = "${hash}";`);
-      console.log("};");
-      console.log();
-      break;
-    }
-    case "vscode-extension": {
-      const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix`;
-      const response = await fetch(url);
-      const data = await response.arrayBuffer();
-      const hash = `sha256-${Buffer.from(await crypto.subtle.digest("SHA-256", data)).toString("base64")}`;
+  switch (type) {
+    case "github": {
+      switch (tool) {
+        case "wpilibutility": {
+          const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz`;
+          hashes.linux = await fetchHash(url);
 
-      console.log(`vscode-extension (${version}):`);
-      console.log("artifactHashes = {");
-      console.log(`  linux = "${hash}";`);
-      console.log("};");
-      console.log();
+          break;
+        }
+        case "vscode-extension": {
+          const url = `https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix`;
+          hashes.linux = await fetchHash(url);
+
+          break;
+        }
+        case "Choreo": {
+          const url = `https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64.AppImage`;
+          hashes.linux = await fetchHash(url);
+
+          break;
+        }
+        case "AdvantageScope": {
+          for (const platform of ["x86_64-linux", "aarch64-linux"]) {
+            const url = `https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-${platform === "x86_64-linux" ? "linux-x64" : "linux-arm64"}-v${version}.AppImage`;
+            hashes[platform] = await fetchHash(url);
+          }
+
+          break;
+        }
+        case "Elastic": {
+          const url = `https://github.com/Gold872/elastic-dashboard/releases/download/v${version}/Elastic-Linux.zip`;
+          hashes.linux = await fetchHash(url);
+
+          break;
+        }
+        case "Pathplanner": {
+          const { execSync } = require("child_process");
+
+          try {
+            const output = execSync(
+              `nix-prefetch-git https://github.com/mjansen4857/pathplanner v${version}`,
+              { encoding: "utf-8", stdio: "pipe" },
+            );
+
+            // Parse the JSON output from nix-prefetch-git
+            const result = JSON.parse(
+              output.split("\n").slice(0, 12).join("\n"),
+            );
+            hashes.hash = result.hash;
+          } catch (error) {
+            console.error(
+              `Error fetching git hash for Pathplanner ${version}:`,
+              error,
+            );
+            throw error;
+          }
+        }
+      }
       break;
     }
     default: {
@@ -88,8 +130,6 @@ async function fetchHashes() {
       const files = programResponse.children.filter(
         (file) => !file.uri.endsWith(".pom"),
       );
-
-      const hashes: Record<string, string> = {};
 
       for (const file of files) {
         const fileUrl = `https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}${file.uri}`;
@@ -103,20 +143,25 @@ async function fetchHashes() {
         else if (tool === "RobotBuilder") platform = "all";
         else if (file.uri.includes("windows")) continue;
 
-        hashes[platform] =
-          `sha256-${Buffer.from(data.checksums.sha256, "hex").toString("base64")}`;
-      }
+        const matches = data.checksums.sha256.match(/.{1,2}/g);
+        if (!matches) continue;
 
-      // Format output
-      console.log(`${tool} (${version}):`);
-      console.log("artifactHashes = {");
-      for (const [platform, hash] of Object.entries(hashes)) {
-        console.log(`  ${platform} = "${hash}";`);
+        const hashArray = Uint8Array.from(
+          matches.map((byte) => Number.parseInt(byte, 16)),
+        );
+        hashes[platform] = `sha256-${btoa(String.fromCharCode(...hashArray))}`;
       }
-      console.log("};");
-      console.log();
     }
   }
+
+  // Format output
+  console.log(`${tool} (${version}):`);
+  console.log("artifactHashes = {");
+  for (const [platform, hash] of Object.entries(hashes)) {
+    console.log(`  ${platform} = "${hash}";`);
+  }
+  console.log("};");
+  console.log();
 }
 
 fetchHashes().catch(console.error);

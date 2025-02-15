@@ -11,8 +11,6 @@ native_tools=(
     "SysId"
     "roboRIOTeamNumberSetter"
     "wpical"
-    "wpilibutility"
-    "vscode-extension"
 )
 
 java_tools=(
@@ -22,6 +20,24 @@ java_tools=(
     "RobotBuilder"
 )
 
+github_tools=(
+    "Elastic"
+    "Choreo"
+    "AdvantageScope"
+    "Pathplanner"
+    "wpilibutility"
+    "vscode-extension"
+)
+
+github_versions=(
+    "2025.1.0"
+    "2025.0.3"
+    "4.1.2"
+    "2025.2.2"
+    "2025.3.1"
+    "2025.3.1"
+)
+
 for tool in "${native_tools[@]}"; do
     bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$native_version" --type native
     echo
@@ -29,5 +45,12 @@ done
 
 for tool in "${java_tools[@]}"; do
     bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$java_version" --type java
+    echo
+done
+
+for i in "${!github_tools[@]}"; do
+    tool="${github_tools[$i]}"
+    version="${github_versions[$i]}"
+    bun fetch_hashes.ts --tool "$tool" --branch "na" --version "$version" --type github
     echo
 done
