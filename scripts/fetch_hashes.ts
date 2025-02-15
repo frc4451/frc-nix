@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { parseArgs } from "util";
+const { execSync } = require("child_process");
 
 export interface ProgramResponse {
   repo: string;
@@ -98,8 +99,6 @@ async function fetchHashes() {
           break;
         }
         case "Pathplanner": {
-          const { execSync } = require("child_process");
-
           try {
             const output = execSync(
               `nix-prefetch-git https://github.com/mjansen4857/pathplanner v${version}`,
@@ -114,6 +113,27 @@ async function fetchHashes() {
           } catch (error) {
             console.error(
               `Error fetching git hash for Pathplanner ${version}:`,
+              error,
+            );
+            throw error;
+          }
+          break;
+        }
+        case "allwpilib": {
+          try {
+            const output = execSync(
+              `nix-prefetch-git https://github.com/wpilibsuite/allwpilib v${version}`,
+              { encoding: "utf-8", stdio: "pipe" },
+            );
+
+            // Parse the JSON output from nix-prefetch-git
+            const result = JSON.parse(
+              output.split("\n").slice(0, 12).join("\n"),
+            );
+            hashes.hash = result.hash;
+          } catch (error) {
+            console.error(
+              `Error fetching git hash for allwpilib ${version}:`,
               error,
             );
             throw error;
