@@ -4,9 +4,9 @@ lib.makeScope pkgs.newScope (self: with self; {
   allwpilibSources = fetchFromGitHub rec {
     passthru = {
       branch = "release";
-      version = "2025.2.1";
-      java.version = "2025.2.1";
-      native.version = "2025.2.1";
+      version = "2025.3.1";
+      java.version = "2025.3.1";
+      native.version = "2025.3.1";
     };
 
     owner = "wpilibsuite";
