@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 branch="release"
-native_version="2025.2.1"
-java_version="2025.2.1"
+native_version="2025.3.1"
+java_version="2025.3.1"
 
 native_tools=(
     "DataLogTool"
@@ -21,11 +21,11 @@ java_tools=(
 )
 
 for tool in "${native_tools[@]}"; do
-    ./fetch_hashes.clj --tool "$tool" --branch "$branch" --version "$native_version" --type native
+    bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$native_version" --type native
     echo
 done
 
 for tool in "${java_tools[@]}"; do
-    ./fetch_hashes.clj --tool "$tool" --branch "$branch" --version "$java_version" --type java
+    bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$java_version" --type java
     echo
 done
