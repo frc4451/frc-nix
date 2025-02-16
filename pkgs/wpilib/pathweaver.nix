@@ -6,11 +6,12 @@ buildJavaTool {
   name = "PathWeaver";
 
   artifactHashes = {
-    linuxarm32 = "sha256-tU/iEh9yujt7wFONXd653Bdw6vsEycYB0IRKNI5NJNs=";
-    linuxarm64 = "sha256-fTR10SPG6sIn25pMUleT3hl7B7n/qwCWzb4pqK0Gt4Q=";
-    linuxx64 = "sha256-HNweJjTROLU6m0gSSW6zVwCIY/fW7nyOmQJmZNGrBkA=";
-    macarm64 = "sha256-z4g1T0ySyPQ2yCotmiFo5s2maDvrjEDHc+irMR3dJB8=";
-    macx64 = "sha256-bTWYntsnXI+PjyzFukFuL5skNIgUy5xg7FdquQqcm9k=";
+    linuxx64 = "sha256-Dv4XuW0oBEsITuy+7khQ/YZCc/Zu7utS5wIU32JZ8Qw=";
+    linuxarm32 = "sha256-OmC58BByaouCVt4W9hFPjcN/DY6S6liIy0wSlDsWLbs=";
+    winx64 = "sha256-rMFlvrPPCy+VYb8EnMDX2p5bvwCygs/LU95ACGbX3Cg=";
+    linuxarm64 = "sha256-O4QLvvXYRysE3vz7Kl9qnkKtY7sSg3BUUqkh0ebJgLY=";
+    macx64 = "sha256-O8vKuZaAJ/YgxMxZy/uSfkwhwfz74Lmcz8Iu1UlNhLg=";
+    macarm64 = "sha256-T9g5VnJbsaXXsNZCJYq3hSdxK+IxCuWEIpK2oJqL+H0=";
   };
 
   iconSvg = ./wpilib_logo.svg;
