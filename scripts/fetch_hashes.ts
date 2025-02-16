@@ -79,7 +79,7 @@ async function fetchHashes() {
           break;
         }
         case "Choreo": {
-          const url = `https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64.AppImage`;
+          const url = `https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64-standalone.zip`;
           hashes.linux = await fetchHash(url);
 
           break;
