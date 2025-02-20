@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { parseArgs } from "util";
-const { execSync } = require("child_process");
+import { execSync } from "child_process";
 
 export interface ProgramResponse {
   repo: string;
@@ -98,7 +98,7 @@ async function fetchHashes() {
 
           break;
         }
-        case "Pathplanner": {
+        case "PathPlanner": {
           try {
             const output = execSync(
               `nix-prefetch-git https://github.com/mjansen4857/pathplanner v${version}`,
@@ -112,7 +112,7 @@ async function fetchHashes() {
             hashes.hash = result.hash;
           } catch (error) {
             console.error(
-              `Error fetching git hash for Pathplanner ${version}:`,
+              `Error fetching git hash for PathPlanner ${version}:`,
               error,
             );
             throw error;

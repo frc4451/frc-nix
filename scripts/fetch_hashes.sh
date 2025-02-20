@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S nix shell nixpkgs#bun nixpkgs#nix-prefetch-git --command bash
 
 branch="release"
 native_version="2025.3.1"
@@ -20,24 +20,14 @@ java_tools=(
     "RobotBuilder"
 )
 
-github_tools=(
-    "Elastic"
-    "Choreo"
-    "AdvantageScope"
-    "Pathplanner"
-    "wpilibutility"
-    "vscode-extension"
-    "allwpilib"
-)
-
-github_versions=(
-    "2025.1.0"
-    "2025.0.3"
-    "4.1.2"
-    "2025.2.2"
-    "2025.3.1"
-    "2025.3.1"
-    "2025.3.1"
+declare -rA github_tools=(
+    ["AdvantageScope"]="4.1.2"
+    ["Choreo"]="2025.0.3"
+    ["Elastic"]="2025.1.0"
+    ["PathPlanner"]="2025.2.2"
+    ["allwpilib"]="2025.3.1"
+    ["vscode-extension"]="2025.3.1"
+    ["wpilibutility"]="2025.3.1"
 )
 
 for tool in "${native_tools[@]}"; do
@@ -50,9 +40,8 @@ for tool in "${java_tools[@]}"; do
     echo
 done
 
-for i in "${!github_tools[@]}"; do
-    tool="${github_tools[$i]}"
-    version="${github_versions[$i]}"
-    bun fetch_hashes.ts --tool "$tool" --branch "na" --version "$version" --type github
+for tool in "${!github_tools[@]}"; do
+    version="${github_tools[$tool]}"
+    bun fetch_hashes.ts --tool "$tool" --version "$version" --type github
     echo
 done
