@@ -21,7 +21,7 @@ java_tools=(
 )
 
 declare -rA github_tools=(
-    ["AdvantageScope"]="4.1.2"
+    ["AdvantageScope"]="4.1.4"
     ["Choreo"]="2025.0.3"
     ["Elastic"]="2025.1.1"
     ["PathPlanner"]="2025.2.2"
