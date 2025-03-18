@@ -30,18 +30,20 @@ declare -rA github_tools=(
     ["wpilibutility"]="2025.3.1"
 )
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 for tool in "${native_tools[@]}"; do
-    bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$native_version" --type native
+    bun "$SCRIPT_DIR/fetch_hashes.ts" --tool "$tool" --branch "$branch" --version "$native_version" --type native
     echo
 done
 
 for tool in "${java_tools[@]}"; do
-    bun fetch_hashes.ts --tool "$tool" --branch "$branch" --version "$java_version" --type java
+    bun "$SCRIPT_DIR/fetch_hashes.ts" --tool "$tool" --branch "$branch" --version "$java_version" --type java
     echo
 done
 
 for tool in "${!github_tools[@]}"; do
     version="${github_tools[$tool]}"
-    bun fetch_hashes.ts --tool "$tool" --version "$version" --type github
+    bun "$SCRIPT_DIR/fetch_hashes.ts" --tool "$tool" --version "$version" --type github
     echo
 done
