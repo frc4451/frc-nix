@@ -6,11 +6,11 @@ buildJavaTool {
   name = "PathWeaver";
 
   artifactHashes = {
-    linuxarm32 = "sha256-OmC58BByaouCVt4W9hFPjcN/DY6S6liIy0wSlDsWLbs=";
-    linuxarm64 = "sha256-O4QLvvXYRysE3vz7Kl9qnkKtY7sSg3BUUqkh0ebJgLY=";
-    linuxx64 = "sha256-Dv4XuW0oBEsITuy+7khQ/YZCc/Zu7utS5wIU32JZ8Qw=";
-    macarm64 = "sha256-T9g5VnJbsaXXsNZCJYq3hSdxK+IxCuWEIpK2oJqL+H0=";
-    macx64 = "sha256-O8vKuZaAJ/YgxMxZy/uSfkwhwfz74Lmcz8Iu1UlNhLg=";
+    linuxarm32 = "sha256-KOOqcfq1eABxkiDQ7u1rCK578L+2w/s1a49H37XSWmU=";
+    linuxarm64 = "sha256-HMxFUuWaytxu2ZDdPmmnNADuwFHS/5MAGPat5I2iCV8=";
+    linuxx64 = "sha256-Rdz3wVxFpfcw+7Bp+RzT6Xnhw5dvRrzy+mYZrDFd+hY=";
+    macarm64 = "sha256-MjBjx9k473AIkzDbpBVh/a/pUuPbhN3eywQS3BYZoeU=";
+    macx64 = "sha256-AgnevTtWCEG+hTpmWe4PqDIsrhYri6B1lmFpdPas2VQ=";
   };
 
   iconSvg = ./wpilib_logo.svg;

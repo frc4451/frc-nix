@@ -1,8 +1,8 @@
 #!/usr/bin/env -S nix shell nixpkgs#bun nixpkgs#nix-prefetch-git --command bash
 
 branch="release"
-native_version="2025.3.1"
-java_version="2025.3.1"
+native_version="2025.3.2"
+java_version="2025.3.2"
 
 native_tools=(
     "DataLogTool"
@@ -25,9 +25,9 @@ declare -rA github_tools=(
     ["Choreo"]="2025.0.3"
     ["Elastic"]="2025.2.0"
     ["PathPlanner"]="2025.2.2"
-    ["allwpilib"]="2025.3.1"
-    ["vscode-extension"]="2025.3.1"
-    ["wpilibutility"]="2025.3.1"
+    ["allwpilib"]="2025.3.2"
+    ["vscode-extension"]="2025.3.2"
+    ["wpilibutility"]="2025.3.2"
 )
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
