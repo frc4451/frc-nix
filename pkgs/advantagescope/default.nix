@@ -2,17 +2,17 @@
 
 let
   pname = "advantagescope";
-  version = "4.1.5";
+  version = "4.1.6";
 
   src = {
     x86_64-linux = fetchurl {
       url = "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-x64-v${version}.AppImage";
-      hash = "sha256-6gAeYxcRuWrZlW0TJcLYkApkgiqMkXuDZTYW+H2q62o=";
+      hash = "sha256-+I50tQIY9jVa0YeNfBuwEbab7Lxf7Rk71uGu9mzX63I=";
     };
 
     aarch64-linux = fetchurl {
       url = "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-arm64-v${version}.AppImage";
-      hash = "sha256-4AcbZ0Fhj7LkBjjVG+E+4Z4ik1C+sr9HjQjoPNewKII=";
+      hash = "sha256-GQ6v9xcgUht0Hk4ewGf8WlNbqp4AbemWH6qWO4JQr8U=";
     };
   }.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 
