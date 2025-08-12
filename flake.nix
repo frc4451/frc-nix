@@ -34,6 +34,7 @@
         elastic-dashboard = final.callPackage ./pkgs/elastic-dashboard { };
         pathplanner = final.callPackage ./pkgs/pathplanner { };
         wpilib = final.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
+        frc-nix-update = final.callPackage ./pkgs/frc-nix-update { };
 
         vscode-extensions = prev.vscode-extensions // { wpilibsuite.vscode-wpilib = final.wpilib.vscode-wpilib; };
       };
@@ -58,6 +59,7 @@
                 choreo
                 elastic-dashboard
                 pathplanner
+                frc-nix-update
                 ;
               inherit (pkgs.wpilib)
                 datalogtool
@@ -81,6 +83,7 @@
             name = "frc-nix";
             packages = with pkgs; [
               nushell
+              frc-nix-update
             ];
           };
         }));
