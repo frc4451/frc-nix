@@ -122,7 +122,8 @@ fetch_url_hash() {
     local hash_hex
     hash_hex=$(curl -sL "$url" | sha256sum | cut -d' ' -f1)
     # Convert to SRI format, ensuring no line breaks
-    printf "%s" "$hash_hex" | xxd -r -p | base64 | tr -d '\n' | sed 's/^/sha256-/'
+    # Convert to SRI format using hex_to_sri
+    hex_to_sri "$hash_hex"
 }
 
 # Convert hex SHA256 to SRI format
@@ -161,7 +162,10 @@ fetch_github_hashes() {
             ;;
         "PathPlanner")
             local output hash
-            output=$(nix-prefetch-git "https://github.com/mjansen4857/pathplanner" "v${version}" 2>/dev/null)
+            if ! output=$(nix-prefetch-git "https://github.com/mjansen4857/pathplanner" "v${version}") || [ -z "$output" ]; then
+                echo "Error: nix-prefetch-git failed for PathPlanner v${version}" >&2
+                return 1
+            fi
             hash=$(echo "$output" | jq -r '.hash')
             echo "hash = \"$hash\";"
             ;;
@@ -230,7 +234,9 @@ format_nix_file() {
     if [[ -f "$file" && "$file" == *.nix ]]; then
         if command -v nix >/dev/null 2>&1; then
             # Change to repo root to ensure nix fmt can find flake.nix
-            (cd "$REPO_ROOT" && nix fmt "$file" 2>/dev/null) || true
+            if ! (cd "$REPO_ROOT" && nix fmt "$file" 2>/dev/null); then
+                echo "Warning: nix fmt failed for $file" >&2
+            fi
         fi
     fi
 }
@@ -340,7 +346,7 @@ update_wpilib_package() {
     log "Checking $name..."
     
     local current_version
-    current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix" 2>/dev/null)
+    current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
     current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
     
     if [[ -z "$current_version" ]]; then
@@ -348,7 +354,7 @@ update_wpilib_package() {
     fi
     
     local latest_version
-    latest_version=$(get_wpilib_latest "release" 2>/dev/null)
+    latest_version=$(get_wpilib_latest "release")
     latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
     
     if [[ "$current_version" == "$latest_version" ]]; then
