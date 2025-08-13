@@ -103,11 +103,11 @@ get_current_version() {
 update_version() {
     local file="$1"
     local new_version="$2"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         return 0
     fi
-    
+
     # Only update files that have explicit version (not inherited)
     if ! grep -q 'inherit.*version' "$file"; then
         sed -i "s/version = \"[^\"]*\"/version = \"$new_version\"/" "$file"
@@ -137,7 +137,7 @@ hex_to_sri() {
 fetch_github_hashes() {
     local tool="$1"
     local version="$2"
-    
+
     case "$tool" in
         "Choreo")
             local url="https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64-standalone.zip"
@@ -177,29 +177,29 @@ fetch_wpilib_hashes() {
     local tool="$1"
     local version="$2"
     local branch="${3:-release}"
-    
+
     local program_url="https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}"
     local program_response
     program_response=$(curl -s "$program_url")
-    
+
     if ! echo "$program_response" | jq -e '.children' >/dev/null 2>&1; then
         error "Failed to fetch WPILib artifacts for $tool $version"
     fi
-    
+
     # Process each file
     while IFS= read -r file_uri; do
         [[ "$file_uri" == *.pom ]] && continue
         [[ "$file_uri" == *windows* ]] && continue
         [[ "$file_uri" == *win* ]] && continue
-        
+
         local file_url="https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}${file_uri}"
         local file_response
         file_response=$(curl -s "$file_url")
-        
+
         local sha256_hex
         sha256_hex=$(echo "$file_response" | jq -r '.checksums.sha256')
         [[ "$sha256_hex" == "null" ]] && continue
-        
+
         # Extract platform name
         local platform
         if [[ "$file_uri" == *"linuxx86-64"* ]]; then
@@ -212,24 +212,24 @@ fetch_wpilib_hashes() {
             basename="${basename%.*}"         # Remove extension
             platform="${basename##*-}"       # Get last part after dash
         fi
-        
+
         local hash
         hash=$(hex_to_sri "$sha256_hex")
         echo "  $platform = \"$hash\";"
-        
+
     done < <(echo "$program_response" | jq -r '.children[] | select(.folder == false) | .uri') | sort
 }
 
 # Format a Nix file using nix fmt
 format_nix_file() {
     local file="$1"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         return 0
     fi
-    
+
     verbose "Formatting $file with nix fmt"
-    
+
     # Run nix fmt on the file, but only if it exists and is a .nix file
     if [[ -f "$file" && "$file" == *.nix ]]; then
         if command -v nix >/dev/null 2>&1; then
@@ -246,13 +246,13 @@ update_hashes() {
     local version="$3"
     local type="$4"
     local branch="${5:-}"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         return 0
     fi
-    
+
     verbose "Fetching hashes for $tool $version"
-    
+
     # Fetch hashes based on type
     local hash_output
     case "$type" in
@@ -266,11 +266,11 @@ update_hashes() {
             error "Unknown hash type: $type"
             ;;
     esac
-    
+
     if [[ -z "$hash_output" ]]; then
         error "Failed to fetch hashes for $tool $version"
     fi
-    
+
     # Update the file based on hash format
     if echo "$hash_output" | grep -q "="; then
         if [[ $(echo "$hash_output" | wc -l) -gt 1 ]]; then
@@ -280,9 +280,9 @@ update_hashes() {
             echo "artifactHashes = {" > "$temp_file"
             echo "$hash_output" >> "$temp_file"
             echo "};" >> "$temp_file"
-            
+
             awk '
-            /artifactHashes = \{/ { 
+            /artifactHashes = \{/ {
                 system("cat '"$temp_file"'")
                 skip=1
                 next
@@ -293,7 +293,7 @@ update_hashes() {
             }
             !skip { print }
             ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-            
+
             rm -f "$temp_file"
         else
             # Single hash - replace hash line
@@ -310,30 +310,30 @@ update_github_package() {
     local repo="$2"
     local file="$3"
     local tool_name="$4"
-    
+
     log "Checking $name..."
-    
+
     local current_version
     current_version=$(get_current_version "$file")
-    
+
     if [[ -z "$current_version" ]]; then
         error "Could not find current version in $file"
     fi
-    
+
     local latest_version
     latest_version=$(get_github_latest "$repo")
-    
+
     if [[ "$current_version" == "$latest_version" ]]; then
         echo "  $name is up to date ($current_version)"
         return 1  # Not updated
     fi
-    
+
     echo "  $name: $current_version -> $latest_version"
-    
+
     update_version "$file" "$latest_version"
     update_hashes "$file" "$tool_name" "$latest_version" "github"
     format_nix_file "$file"
-    
+
     return 0  # Updated
 }
 
@@ -342,51 +342,51 @@ update_wpilib_package() {
     local name="$1"
     local file="$2"
     local tool_name="$3"
-    
+
     log "Checking $name..."
-    
+
     local current_version
     current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
     current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
-    
+
     if [[ -z "$current_version" ]]; then
         error "Could not find current WPILib version"
     fi
-    
+
     local latest_version
     latest_version=$(get_wpilib_latest "release")
     latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
-    
+
     if [[ "$current_version" == "$latest_version" ]]; then
         echo "  $name is up to date ($current_version)"
         return 1  # Not updated
     fi
-    
+
     echo "  $name: $current_version -> $latest_version"
-    
+
     # Update WPILib default.nix version
     update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$latest_version"
     format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
-    
+
     # Determine if this is a Java or native tool
     local tool_type="native"
     if grep -q "buildJavaTool" "$file"; then
         tool_type="java"
     fi
-    
+
     # Update hashes if the file contains artifactHashes
     if grep -q "artifactHashes" "$file"; then
         update_hashes "$file" "$tool_name" "$latest_version" "$tool_type" "release"
         format_nix_file "$file"
     fi
-    
+
     return 0  # Updated
 }
 
 # Discover and update all packages
 update_all_packages() {
     local updated=()
-    
+
     # GitHub packages
     declare -A github_packages=(
         ["advantagescope"]="Mechanical-Advantage/AdvantageScope:pkgs/advantagescope/default.nix:AdvantageScope"
@@ -394,7 +394,7 @@ update_all_packages() {
         ["elastic-dashboard"]="Gold872/elastic-dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/default.nix:PathPlanner"
     )
-    
+
     for package in "${!github_packages[@]}"; do
         if [[ ${#PACKAGES[@]} -eq 0 ]] || printf '%s\n' "${PACKAGES[@]}" | grep -Fxq "$package"; then
             IFS=':' read -r repo file tool_name <<< "${github_packages[$package]}"
@@ -403,7 +403,7 @@ update_all_packages() {
             fi
         fi
     done
-    
+
     # WPILib packages
     declare -A wpilib_packages=(
         ["glass"]="pkgs/wpilib/glass.nix:Glass"
@@ -417,7 +417,7 @@ update_all_packages() {
         ["sysid"]="pkgs/wpilib/sysid.nix:SysId"
         ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
     )
-    
+
     for package in "${!wpilib_packages[@]}"; do
         if [[ ${#PACKAGES[@]} -eq 0 ]] || printf '%s\n' "${PACKAGES[@]}" | grep -Fxq "$package"; then
             IFS=':' read -r file tool_name <<< "${wpilib_packages[$package]}"
@@ -428,7 +428,7 @@ update_all_packages() {
             fi
         fi
     done
-    
+
     # Summary
     if [[ ${#updated[@]} -gt 0 ]]; then
         log "Updated packages: ${updated[*]}"
@@ -443,13 +443,13 @@ update_all_packages() {
 # Check dependencies
 check_deps() {
     local missing=()
-    
+
     for cmd in curl jq sed awk xxd base64 nix-prefetch-git nix; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing+=("$cmd")
         fi
     done
-    
+
     if [[ ${#missing[@]} -gt 0 ]]; then
         error "Missing required dependencies: ${missing[*]}"
     fi
@@ -457,12 +457,14 @@ check_deps() {
 
 main() {
     check_deps
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log "DRY RUN - no changes will be made"
     fi
-    
+
     update_all_packages
+
+    nix fmt
 }
 
 main "$@"
