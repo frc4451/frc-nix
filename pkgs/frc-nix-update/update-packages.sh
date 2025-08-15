@@ -81,7 +81,6 @@ get_wpilib_latest() {
     curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/$branch/edu/wpi/first/wpilibj/wpilibj-java" | \
         jq -r '.children[] | select(.folder == true) | .uri' | \
         sed 's|^/||; s|/$||' | \
-        grep -v SNAPSHOT | \
         sort -V | \
         tail -1
 }
@@ -108,9 +107,10 @@ update_version() {
         return 0
     fi
 
-    # Only update files that have explicit version (not inherited)
-    if ! grep -q 'inherit.*version' "$file"; then
-        sed -i "s/version = \"[^\"]*\"/version = \"$new_version\"/" "$file"
+    # Only update files that don't inherit version from a parent scope
+    # Check for patterns like "inherit (lib) version" or "inherit version" in function parameters
+    if ! grep -q 'inherit.*(.*).*version\|inherit.*version.*from\|version.*=.*inherit' "$file"; then
+        sed -i "s|version = \"[^\"]*\"|version = \"$new_version\"|" "$file"
     fi
 }
 
@@ -120,7 +120,7 @@ fetch_url_hash() {
     verbose "Fetching hash for $url"
     # Use a more robust method to ensure we get the complete hash
     local hash_hex
-    hash_hex=$(curl -sL "$url" | sha256sum | cut -d' ' -f1)
+    hash_hex=$(curl -sL "$url" | sha256sum | cut -d ' ' -f1 | tr -d '\n')
     # Convert to SRI format, ensuring no line breaks
     # Convert to SRI format using hex_to_sri
     hex_to_sri "$hash_hex"
@@ -130,7 +130,7 @@ fetch_url_hash() {
 hex_to_sri() {
     local hex="$1"
     # Ensure no line breaks in the output
-    printf "%s" "$hex" | xxd -r -p | base64 | tr -d '\n' | sed 's/^/sha256-/'
+    nix hash convert --hash-algo sha256 --to sri "$hex" | tr -d '\n'
 }
 
 # Fetch hashes for GitHub releases
@@ -232,11 +232,9 @@ format_nix_file() {
 
     # Run nix fmt on the file, but only if it exists and is a .nix file
     if [[ -f "$file" && "$file" == *.nix ]]; then
-        if command -v nix >/dev/null 2>&1; then
-            # Change to repo root to ensure nix fmt can find flake.nix
-            if ! (cd "$REPO_ROOT" && nix fmt "$file" 2>/dev/null); then
-                echo "Warning: nix fmt failed for $file" >&2
-            fi
+        # Change to repo root to ensure nix fmt can find flake.nix
+        if ! (cd "$REPO_ROOT" && nix fmt "$file" 2>/dev/null); then
+            echo "Warning: nix fmt failed for $file" >&2
         fi
     fi
 }
@@ -274,32 +272,55 @@ update_hashes() {
     # Update the file based on hash format
     if echo "$hash_output" | grep -q "="; then
         if [[ $(echo "$hash_output" | wc -l) -gt 1 ]]; then
-            # Multiple hashes - replace artifactHashes block
-            local temp_file
-            temp_file=$(mktemp)
-            echo "artifactHashes = {" > "$temp_file"
-            echo "$hash_output" >> "$temp_file"
-            echo "};" >> "$temp_file"
+            # Multiple hashes - check if this is AdvantageScope or artifactHashes format
+            if [[ "$tool" == "AdvantageScope" ]]; then
+                # AdvantageScope uses individual hash lines within src block
+                while IFS= read -r hash_line; do
+                    if [[ "$hash_line" =~ ^([^=]+)\ =\ \"([^\"]+)\"\;$ ]]; then
+                        local platform="${BASH_REMATCH[1]}"
+                        local hash_value="${BASH_REMATCH[2]}"
+                        # Replace hash within the specific platform's fetchurl block
+                        sed -i "/$platform = fetchurl {/,/};/{s/hash = \"[^\"]*\"/hash = \"$hash_value\"/}" "$file"
+                    fi
+                done <<< "$hash_output"
+            else
+                # Other packages use artifactHashes block
+                local temp_file
+                temp_file=$(mktemp)
+                echo "artifactHashes = {" > "$temp_file"
+                echo "$hash_output" >> "$temp_file"
+                echo "};" >> "$temp_file"
 
-            awk '
-            /artifactHashes = \{/ {
-                system("cat '"$temp_file"'")
-                skip=1
-                next
-            }
-            skip && /^\s*\};/ {
-                skip=0
-                next
-            }
-            !skip { print }
-            ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+                awk '
+                /artifactHashes = \{/ {
+                    system("cat '"$temp_file"'")
+                    skip=1
+                    next
+                }
+                skip && /^\s*\};/ {
+                    skip=0
+                    next
+                }
+                !skip { print }
+                ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 
-            rm -f "$temp_file"
+                rm -f "$temp_file"
+            fi
         else
             # Single hash - replace hash line
             local hash_value
-            hash_value=$(echo "$hash_output" | grep -o '"sha256-[^"]*"')
-            sed -i "s/hash = \"[^\"]*\"/hash = $hash_value/" "$file"
+            # Extract just the hash value from 'hash = "sha256-...";'
+            hash_value=${hash_output#*\"}
+            hash_value=${hash_value%\"*}
+
+            # For Choreo, only update the src hash (first occurrence)
+            if [[ "$tool" == "Choreo" ]]; then
+                # Use sed with address to update only the first hash occurrence
+                sed -i '0,/hash = "[^"]*"/{s|hash = "[^"]*"|hash = "'"${hash_value}"'"|;}' "$file"
+            else
+                # Use | as delimiter to avoid issues with / in hash
+                sed -i "s|hash = \"[^\"]*\"|hash = \"${hash_value}\"|" "$file"
+            fi
         fi
     fi
 }
@@ -444,7 +465,7 @@ update_all_packages() {
 check_deps() {
     local missing=()
 
-    for cmd in curl jq sed awk xxd base64 nix-prefetch-git nix; do
+    for cmd in curl jq sed awk nix-prefetch-git nix; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing+=("$cmd")
         fi

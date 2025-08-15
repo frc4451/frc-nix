@@ -18,16 +18,10 @@ writeShellApplication {
     gnused
     gawk
     coreutils
-    xxd
     nix-prefetch-git
   ];
 
-  text = ''
-    # Set REPO_ROOT to current working directory (where user runs the command)
-    REPO_ROOT="$PWD"
-    
-    ${builtins.readFile ./update-packages.sh}
-  '';
+  text = builtins.readFile ./update-packages.sh;
 
   meta = with lib; {
     description = "Auto-update tool for FRC Nix packages";
