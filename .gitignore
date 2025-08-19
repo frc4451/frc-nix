@@ -11,3 +11,6 @@ result
 # Clojure
 .clj-kondo
 .lsp
+
+# Crush
+.crush
