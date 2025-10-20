@@ -344,8 +344,8 @@ update_github_package() {
     latest_version=$(get_github_latest "$repo")
 
     if [[ "$current_version" == "$latest_version" ]]; then
-        echo "  $name is up to date ($current_version)"
-        return 1  # Not updated
+    echo "  $name is up to date ($current_version)"
+    return 1  # Not updated
     fi
 
     echo "  $name: $current_version -> $latest_version"
@@ -378,8 +378,8 @@ update_wpilib_package() {
     latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
 
     if [[ "$current_version" == "$latest_version" ]]; then
-        echo "  $name is up to date ($current_version)"
-        return 1  # Not updated
+    echo "  $name is up to date ($current_version)"
+    return 1  # Not updated
     fi
 
     echo "  $name: $current_version -> $latest_version"
