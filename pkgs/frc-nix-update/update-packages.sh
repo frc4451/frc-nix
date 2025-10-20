@@ -129,8 +129,7 @@ fetch_url_hash() {
 # Convert hex SHA256 to SRI format
 hex_to_sri() {
     local hex="$1"
-    # Ensure no line breaks in the output
-    nix hash convert --hash-algo sha256 --to sri "$hex" | tr -d '\n'
+    nix-hash --type sha256 --to-sri "$hex" | tr -d '\n'
 }
 
 # Fetch hashes for GitHub releases
