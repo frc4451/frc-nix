@@ -1,12 +1,12 @@
-{ lib
-, writeShellApplication
-, curl
-, jq
-, gnused
-, gawk
-, coreutils
-, xxd
-, nix-prefetch-git
+{
+  lib,
+  writeShellApplication,
+  curl,
+  jq,
+  gnused,
+  gawk,
+  coreutils,
+  nix-prefetch-git,
 }:
 
 writeShellApplication {
@@ -28,7 +28,7 @@ writeShellApplication {
     longDescription = ''
       A tool similar to nix-update that automatically updates FRC packages
       to their latest versions, including fetching new hashes.
-      
+
       Supports updating:
       - GitHub-based packages (AdvantageScope, Choreo, etc.)
       - WPILib tools from Maven

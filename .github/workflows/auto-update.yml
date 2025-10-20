@@ -68,7 +68,7 @@ jobs:
 
           # Verify the updates worked
           echo "Verifying updates with nix flake check..."
-          if ! nix flake check --no-build; then
+          if ! nix flake check; then
             echo "❌ Flake check failed after updates"
             exit 1
           fi
