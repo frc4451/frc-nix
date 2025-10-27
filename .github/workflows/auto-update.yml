@@ -95,6 +95,10 @@ jobs:
           # Run the actual update (without dry-run)
           nix run .#frc-nix-update
 
+          # Update nixpkgs to the latest unstable since packages were updated
+          echo "Updating nixpkgs to latest unstable..."
+          nix flake update nixpkgs
+
           # Verify the updates worked
           echo "Verifying updates with nix flake check..."
           if ! nix flake check; then
@@ -110,17 +114,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
-            chore: update FRC packages
+            chore: update FRC packages and nixpkgs
 
             Auto-updated packages: ${{ steps.check-updates.outputs.updated_packages }}
+            Also updated nixpkgs to latest unstable.
 
             🤖 Generated with frc-nix-update
             Co-Authored-By: 🤖 GitHub Actions <action@github.com>
-          title: "chore: update FRC packages to latest versions"
+          title: "chore: update FRC packages and nixpkgs to latest versions"
           body: |
             ## 🤖 Automated Package Updates
 
-            This PR updates the following packages to their latest available versions.
+            This PR updates the following packages to their latest available versions, and bumps nixpkgs to the latest unstable.
 
             ${{ steps.check-updates.outputs.version_changes }}
 
