@@ -45,3 +45,17 @@ export JAVA_HOME="$HOME"/wpilib/2025/jdk/
 ## 4) 🎉
 
 `./gradlew simulateJava`
+
+## 5) Troubleshooting
+
+If you get `GLFW Error 65542: GLX: Failed to load GLX` when trying to open the simgui you may need to LibGL to nix-ld.
+
+```nix
+programs.nix-ld = {
+  enable = true;
+  libraries = with pkgs; [
+    ...,
+    libGL,
+  ];
+};
+```
