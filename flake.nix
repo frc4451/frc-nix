@@ -33,7 +33,7 @@
         choreo = final.callPackage ./pkgs/choreo { };
         elastic-dashboard = final.callPackage ./pkgs/elastic-dashboard { };
         pathplanner = final.callPackage ./pkgs/pathplanner { };
-        wpilib = final.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
+        wpilib = final.lib.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
         frc-nix-update = final.callPackage ./pkgs/frc-nix-update { };
 
         vscode-extensions = prev.vscode-extensions // { wpilibsuite.vscode-wpilib = final.wpilib.vscode-wpilib; };
