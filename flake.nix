@@ -11,9 +11,13 @@
   };
 
   outputs =
-    inputs:
+    {
+      self,
+      nixpkgs,
+      nix-github-actions,
+    }:
     let
-      inherit (inputs.nixpkgs) lib;
+      inherit (nixpkgs) lib;
 
       supportedSystems = [
         "x86_64-linux"
@@ -24,46 +28,35 @@
         "aarch64-darwin"
       ];
 
-      forEachPkgs =
-        f:
-        lib.genAttrs supportedSystems (
-          system:
-          f (
-            import inputs.nixpkgs {
-              inherit system;
-              overlays = [ inputs.self.overlays.default ];
-            }
-          )
-        );
+      forEachPkgs = f: lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
     in
     {
-      githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
-        checks = lib.getAttrs [ "x86_64-linux" ] inputs.self.packages;
+      githubActions = nix-github-actions.lib.mkGithubMatrix {
+        checks = lib.getAttrs [ "x86_64-linux" ] self.packages;
       };
 
-      overlays.default = final: prev: {
-        advantagescope = final.callPackage ./pkgs/advantagescope { };
-        choreo = final.callPackage ./pkgs/choreo { };
-        elastic-dashboard = final.callPackage ./pkgs/elastic-dashboard { };
-        pathplanner = final.callPackage ./pkgs/pathplanner { };
-        wpilib = final.lib.recurseIntoAttrs (final.callPackage ./pkgs/wpilib { });
-        frc-nix-update = final.callPackage ./pkgs/frc-nix-update { };
-
-        vscode-extensions = prev.vscode-extensions // { wpilibsuite.vscode-wpilib = final.wpilib.vscode-wpilib; };
-      };
+      overlays.default =
+        final: prev:
+        import ./. {
+          pkgs = final;
+          inherit prev;
+        };
 
       packages = forEachPkgs (
         pkgs:
+        let
+          packages = import ./. { inherit pkgs; };
+        in
         lib.attrsets.filterAttrs (_: pkg: builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms)
           {
-            inherit (pkgs)
+            inherit (packages)
               advantagescope
               choreo
               elastic-dashboard
               pathplanner
               frc-nix-update
               ;
-            inherit (pkgs.wpilib)
+            inherit (packages.wpilib)
               datalogtool
               glass
               outlineviewer
