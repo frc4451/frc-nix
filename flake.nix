@@ -11,9 +11,13 @@
   };
 
   outputs =
-    inputs:
+    {
+      self,
+      nixpkgs,
+      nix-github-actions,
+    }:
     let
-      inherit (inputs.nixpkgs) lib;
+      inherit (nixpkgs) lib;
 
       supportedSystems = [
         "x86_64-linux"
@@ -24,11 +28,11 @@
         "aarch64-darwin"
       ];
 
-      forEachPkgs = f: lib.genAttrs supportedSystems (system: f inputs.nixpkgs.legacyPackages.${system});
+      forEachPkgs = f: lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
     in
     {
-      githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
-        checks = lib.getAttrs [ "x86_64-linux" ] inputs.self.packages;
+      githubActions = nix-github-actions.lib.mkGithubMatrix {
+        checks = lib.getAttrs [ "x86_64-linux" ] self.packages;
       };
 
       overlays.default =
