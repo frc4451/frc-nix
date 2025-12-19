@@ -484,7 +484,7 @@ main() {
 
     update_all_packages
 
-    nix fmt
+    nix fmt "$REPO_ROOT"
 }
 
 main "$@"
