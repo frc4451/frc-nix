@@ -1,12 +1,13 @@
 { lib
-, flutter
+, flutter332
 , fetchFromGitHub
 , copyDesktopItems
 , stdenv
+, xz
 , libuuid
 , makeDesktopItem
 }:
-flutter.buildFlutterApplication rec {
+flutter332.buildFlutterApplication rec {
   pname = "pathplanner";
   version = "2025.2.2";
 
@@ -21,8 +22,10 @@ flutter.buildFlutterApplication rec {
 
   nativeBuildInputs = [ copyDesktopItems ];
 
-  # libblkid on Linux
-  buildInputs = lib.optionals stdenv.isLinux [ libuuid ];
+  buildInputs =
+    [ xz ]
+    # provides libblkid on Linux
+    ++ lib.optionals stdenv.isLinux [ libuuid ];
 
   postUnpack = ''
     # Make the version shown in the GUI match the actual version instead of "0.0.0"
