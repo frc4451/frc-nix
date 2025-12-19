@@ -74,15 +74,5 @@
       );
 
       formatter = forEachPkgs (pkgs: pkgs.nixpkgs-fmt);
-
-      devShell = forEachPkgs (pkgs: {
-        default = pkgs.mkShell {
-          name = "frc-nix";
-          packages = with pkgs; [
-            nushell
-            frc-nix-update
-          ];
-        };
-      });
     };
 }
