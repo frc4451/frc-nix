@@ -1,12 +1,12 @@
-{
-  lib,
-  writeShellApplication,
-  curl,
-  jq,
-  gnused,
-  gawk,
-  coreutils,
-  nix-prefetch-git,
+{ lib
+, writeShellApplication
+, curl
+, jq
+, gnused
+, gawk
+, coreutils
+, nix-prefetch-git
+,
 }:
 
 writeShellApplication {

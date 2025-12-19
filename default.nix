@@ -1,6 +1,6 @@
-{
-  pkgs ? import <nixpkgs>,
-  prev ? pkgs,
+{ pkgs ? import <nixpkgs>
+, prev ? pkgs
+,
 }:
 rec {
   advantagescope = pkgs.callPackage ./pkgs/advantagescope { };

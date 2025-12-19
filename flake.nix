@@ -11,10 +11,10 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      nix-github-actions,
+    { self
+    , nixpkgs
+    , nix-github-actions
+    ,
     }:
     let
       inherit (nixpkgs) lib;
