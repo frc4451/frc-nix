@@ -1,8 +1,8 @@
 { vscode-utils
 , allwpilibSources
 , fetchurl
+, unzip
 , lib
-,
 }:
 vscode-utils.buildVscodeExtension rec {
   inherit (allwpilibSources) version;
@@ -17,6 +17,8 @@ vscode-utils.buildVscodeExtension rec {
     # so that existing `unzip` hooks takes care of the unpacking.
     name = "${name}.zip";
   };
+
+  nativeBuildInputs = [ unzip ];
 
   # VSCode Metadata
   vscodeExtPublisher = "wpilibsuite";
