@@ -1,46 +1,126 @@
-{ lib, stdenv, fetchurl, appimageTools }:
-
+{
+  lib,
+  buildNpmPackage,
+  fetchFromGitHub,
+  emscripten,
+  electron,
+  libGL,
+  makeWrapper,
+  makeDesktopItem,
+  copyDesktopItems,
+  callPackage,
+  isWPILibVersion ? false,
+}:
 let
-  pname = "advantagescope";
-  version = "4.1.6";
+  pname = "advantage-scope";
+  version = "26.0.0-beta-1";
 
-  src = {
-    x86_64-linux = fetchurl {
-      url = "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-x64-v${version}.AppImage";
-      hash = "sha256-+I50tQIY9jVa0YeNfBuwEbab7Lxf7Rk71uGu9mzX63I=";
-    };
-
-    aarch64-linux = fetchurl {
-      url = "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-arm64-v${version}.AppImage";
-      hash = "sha256-GQ6v9xcgUht0Hk4ewGf8WlNbqp4AbemWH6qWO4JQr8U=";
-    };
-  }.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
-
-  icon = fetchurl {
-    url = "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v${version}/icons/window-icon.png";
-    hash = "sha256-gqcCqthqM2g4sylg9zictKwRggbaALQk9ln/NaFHxdY=";
+  src = fetchFromGitHub {
+    owner = "Mechanical-Advantage";
+    repo = "AdvantageScope";
+    tag = "v${version}";
+    hash = "sha256-FoAbeTphYk3eIs2FMn/R6Zg0K1oglyI3DAZhEYkO208=";
   };
 
-  appimageContents = appimageTools.extract {
-    inherit pname version src;
+  fetchersAtters = {
+    inherit
+      version
+      npmDepsHash
+      src
+      pname
+      ;
   };
+
+  docs = callPackage ./docs.nix fetchersAtters;
+  licenses = callPackage ./licenses.nix fetchersAtters;
+  tesseract = callPackage ./tesseract-lang.nix fetchersAtters;
+  npmDepsHash = "sha256-O6YaK8Gk7Jf6Z5OKXbUjQgANrKh1c+Ka5hOBBBU+QLA=";
 in
-appimageTools.wrapType2 {
-  inherit pname version src;
+buildNpmPackage (finalAttrs: {
+  inherit
+    version
+    npmDepsHash
+    src
+    pname
+    ;
 
-  extraInstallCommands = ''
-    install -Dm 444 ${appimageContents}/${pname}.desktop "$out"/share/applications/${pname}.desktop
-    install -Dm 444 ${icon} "$out"/share/pixmaps/advantagescope.png
+  patches = [
+    ./0001-change-build-targets.patch
+    ./0001-fix-wasm-compile.patch
+  ];
 
-    substituteInPlace "$out"/share/applications/${pname}.desktop \
-      --replace "Exec=AppRun" "Exec=${pname}"
+  makeCacheWritable = true;
+  npmFlags = [
+    "--legacy-peer-deps"
+    "--ignore-scripts"
+  ];
+
+  preBuild = ''
+    cd $TMPDIR
+    export EMSCRIPTENCACHE=$(mkdir emscriptencache)
+    cd $./source
   '';
 
-  meta = with lib; {
-    description = "A robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition teams";
-    homepage = "https://github.com/Mechanical-Advantage/AdvantageScope";
-    license = licenses.mit;
-    mainProgram = "advantagescope";
-    platforms = [ "x86_64-linux" "aarch64-linux" ];
+  buildPhase = ''
+    export ASCOPE_DISTRIBUTION=${lib.optionalString isWPILibVersion "WPILIB"}
+    cp ${licenses}/licenses.json ./src/
+    npm run compile
+    npm run wasm:compile
+    cp -r ${docs} ./docs/build/
+    cp ${tesseract}/eng.traineddata.gz ./
+    cp -r ${electron.dist} electron-dist
+    chmod -R u+w electron-dist
+    npx electron-builder build -l -c.electronDist=electron-dist -c.electronVersion=${electron.version}
+  '';
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp -r ./dist/linux-unpacked/. $out/bin/
+    install -Dm444 "${src}"/icons/app/app-icons-linux/icon_512x512.png "$out"/share/pixmaps/${pname}.png
+
+    runHook postInstall
+  '';
+
+  postFixup = ''
+    wrapProgram $out/bin/advantagescope \
+    --set LD_LIBRARY_PATH ${
+      lib.makeLibraryPath [
+        libGL
+      ]
+    } \
+    --append-flags "--no-sandbox"
+  '';
+
+  desktopItems = [
+    (makeDesktopItem {
+      desktopName = "AdvantageScope";
+      name = pname;
+      exec = "advantagescope";
+      icon = pname;
+      categories = [
+        "Robotics"
+        "Development"
+      ];
+      keywords = [
+        "FRC"
+        "Data"
+        "Visualisation"
+      ];
+    })
+  ];
+
+  meta = {
+    description = "AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by Team 6328";
+    homepage = "https://docs.advantagescope.org/";
+    license = lib.licenses.bsd3;
+    maintainers = with lib.maintainers; [ me-it-is ];
   };
-}
+
+  nativeBuildInputs = [
+    emscripten
+    makeWrapper
+    copyDesktopItems
+  ];
+
+  buildInputs = [ makeWrapper ];
+})

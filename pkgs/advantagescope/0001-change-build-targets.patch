@@ -1,0 +1,30 @@
+From 28c4e3a3890231cd6136cc2d77959a790d995b74 Mon Sep 17 00:00:00 2001
+From: me-it-is <188520719+me-it-is@users.noreply.github.com>
+Date: Mon, 30 Jun 2025 13:39:55 -0700
+Subject: [PATCH] change build targets
+
+---
+ package.json | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/package.json b/package.json
+index a7c7cd8..cc429d4 100644
+--- a/package.json
++++ b/package.json
+@@ -192,12 +192,7 @@
+     },
+     "linux": {
+       "target": [
+-        "AppImage",
+-        "snap",
+-        "flatpak",
+-        "deb",
+-        "rpm",
+-        "pacman"
++        "dir"
+       ],
+       "icon": "icons/app/app-icons-linux",
+       "category": "Utility"
+-- 
+2.49.0
+
