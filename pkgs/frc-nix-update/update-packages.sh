@@ -279,7 +279,7 @@ update_hashes() {
                         local platform="${BASH_REMATCH[1]}"
                         local hash_value="${BASH_REMATCH[2]}"
                         # Replace hash within the specific platform's fetchurl block
-                        sed -i "/$platform = fetchurl {/,/};/{s/hash = \"[^\"]*\"/hash = \"$hash_value\"/}" "$file"
+                        sed -i "/$platform = fetchurl {/,/};/{s|hash = \"[^\"]*\"|hash = \"$hash_value\"|}" "$file"
                     fi
                 done <<< "$hash_output"
             else
