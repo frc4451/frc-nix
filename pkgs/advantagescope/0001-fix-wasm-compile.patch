@@ -1,0 +1,36 @@
+From 640c992291e530a16531bfb113bd7860888ad56b Mon Sep 17 00:00:00 2001
+From: me-it-is <188520719+me-it-is@users.noreply.github.com>
+Date: Sat, 23 Aug 2025 22:09:54 -0700
+Subject: [PATCH] fix wasm compile
+
+---
+ wasmCompile.mjs | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/wasmCompile.mjs b/wasmCompile.mjs
+index ebee0bb..0be1ee4 100644
+--- a/wasmCompile.mjs
++++ b/wasmCompile.mjs
+@@ -8,7 +8,7 @@
+ import { exec } from "child_process";
+ import fs from "fs";
+ 
+-const EMSCRIPTEN_VERSION = "4.0.12";
++const EMSCRIPTEN_VERSION = ""; //to remove version pinning
+ 
+ try {
+   await new Promise(async (resolve, reject) => {
+@@ -50,8 +50,9 @@ try {
+       inPath = "'src/hub/dataSources/wpilog/indexer/wpilogIndexer.c'";
+       outPath = "'bundles/hub$wpilogIndexer.js' ";
+     }
++    var cache = process.env.EMSCRIPTENCACHE;
+     exec(
+-      `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
++      `emcc ${inPath} -o ${outPath} --cache ${cache} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
+       (error, stdout, stderr) => {
+         console.log(stdout);
+         console.error(stderr);
+-- 
+2.50.1
+
