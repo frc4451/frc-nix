@@ -324,6 +324,12 @@ update_hashes() {
     fi
 }
 
+# Check if package is marked as broken
+is_package_broken() {
+    local file="$1"
+    grep -q 'broken = true' "$file"
+}
+
 # Update a GitHub-based package
 update_github_package() {
     local name="$1"
@@ -332,6 +338,12 @@ update_github_package() {
     local tool_name="$4"
 
     log "Checking $name..."
+
+    # Skip if package is marked as broken
+    if is_package_broken "$file"; then
+        echo "  $name is marked as broken, skipping"
+        return 1  # Not updated
+    fi
 
     local current_version
     current_version=$(get_current_version "$file")
@@ -364,6 +376,12 @@ update_wpilib_package() {
     local tool_name="$3"
 
     log "Checking $name..."
+
+    # Skip if package is marked as broken
+    if is_package_broken "$file"; then
+        echo "  $name is marked as broken, skipping"
+        return 1  # Not updated
+    fi
 
     local current_version
     current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")

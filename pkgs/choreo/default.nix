@@ -71,5 +71,6 @@ stdenv.mkDerivation {
     license = licenses.bsd3;
     mainProgram = "choreo";
     platforms = [ "x86_64-linux" ];
+    broken = true;
   };
 }
