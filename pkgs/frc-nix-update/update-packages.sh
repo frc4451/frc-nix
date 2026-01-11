@@ -78,11 +78,27 @@ get_github_latest() {
 # Get latest WPILib version
 get_wpilib_latest() {
     local branch="${1:-release}"
-    curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/$branch/edu/wpi/first/wpilibj/wpilibj-java" | \
+    verbose "Fetching latest WPILib version from Maven..."
+    local latest
+    latest=$(curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/$branch/edu/wpi/first/wpilibj/wpilibj-java" | \
         jq -r '.children[] | select(.folder == true) | .uri' | \
         sed 's|^/||; s|/$||' | \
+        grep -v 'beta\|alpha\|rc' | \
         sort -V | \
-        tail -1
+        tail -1)
+    verbose "Latest WPILib version: $latest"
+    echo "$latest"
+}
+
+# Compare two versions using semantic versioning
+# Returns 0 if $1 < $2, 1 otherwise
+version_less_than() {
+    local ver1="$1"
+    local ver2="$2"
+    # Use sort -V to compare versions semantically
+    local sorted
+    sorted=$(printf '%s\n%s\n' "$ver1" "$ver2" | sort -V | head -1)
+    [[ "$sorted" == "$ver1" && "$ver1" != "$ver2" ]]
 }
 
 # Extract current version from Nix file
@@ -374,8 +390,10 @@ update_wpilib_package() {
     local name="$1"
     local file="$2"
     local tool_name="$3"
+    local version_already_checked="${4:-false}"
+    local new_version="${5:-}"
 
-    log "Checking $name..."
+    verbose "Checking $name..."
 
     # Skip if package is marked as broken
     if is_package_broken "$file"; then
@@ -383,28 +401,34 @@ update_wpilib_package() {
         return 1  # Not updated
     fi
 
-    local current_version
-    current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
-    current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
+    # If version wasn't checked centrally, check it now
+    if [[ "$version_already_checked" != "true" ]]; then
+        local current_version
+        current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
+        current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
 
-    if [[ -z "$current_version" ]]; then
-        error "Could not find current WPILib version"
+        if [[ -z "$current_version" ]]; then
+            error "Could not find current WPILib version"
+        fi
+
+        local latest_version
+        latest_version=$(get_wpilib_latest "release")
+        latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
+
+        if ! version_less_than "$current_version" "$latest_version"; then
+            echo "  $name is up to date ($current_version)"
+            return 1  # Not updated
+        fi
+
+        new_version="$latest_version"
+        echo "  $name: $current_version -> $latest_version"
+
+        # Update WPILib default.nix version
+        update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$new_version"
+        format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+    else
+        echo "  Updating $name hashes for version $new_version"
     fi
-
-    local latest_version
-    latest_version=$(get_wpilib_latest "release")
-    latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
-
-    if [[ "$current_version" == "$latest_version" ]]; then
-    echo "  $name is up to date ($current_version)"
-    return 1  # Not updated
-    fi
-
-    echo "  $name: $current_version -> $latest_version"
-
-    # Update WPILib default.nix version
-    update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$latest_version"
-    format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
 
     # Determine if this is a Java or native tool
     local tool_type="native"
@@ -414,7 +438,7 @@ update_wpilib_package() {
 
     # Update hashes if the file contains artifactHashes
     if grep -q "artifactHashes" "$file"; then
-        update_hashes "$file" "$tool_name" "$latest_version" "$tool_type" "release"
+        update_hashes "$file" "$tool_name" "$new_version" "$tool_type" "release"
         format_nix_file "$file"
     fi
 
@@ -456,12 +480,65 @@ update_all_packages() {
         ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
     )
 
+    # Check WPILib version once for all packages
+    local wpilib_needs_update=false
+    local wpilib_current_version=""
+    local wpilib_latest_version=""
+    
+    # Determine if any WPILib packages need to be checked
+    local check_wpilib=false
+    if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+        check_wpilib=true
+    else
+        for package in "${!wpilib_packages[@]}"; do
+            if printf '%s\n' "${PACKAGES[@]}" | grep -Fxq "$package"; then
+                check_wpilib=true
+                break
+            fi
+        done
+    fi
+
+    if [[ "$check_wpilib" == "true" ]]; then
+        log "Checking WPILib version..."
+        wpilib_current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
+        wpilib_current_version=$(echo "$wpilib_current_version" | head -1 | tr -d '[:space:]')
+        
+        if [[ -z "$wpilib_current_version" ]]; then
+            error "Could not find current WPILib version"
+        fi
+        
+        wpilib_latest_version=$(get_wpilib_latest "release")
+        wpilib_latest_version=$(echo "$wpilib_latest_version" | head -1 | tr -d '[:space:]')
+        
+        verbose "Current WPILib version: $wpilib_current_version"
+        verbose "Latest WPILib version: $wpilib_latest_version"
+        
+        if version_less_than "$wpilib_current_version" "$wpilib_latest_version"; then
+            wpilib_needs_update=true
+            log "WPILib update detected: $wpilib_current_version -> $wpilib_latest_version"
+            
+            # Update default.nix version once
+            echo "  Updating WPILib version in default.nix"
+            update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$wpilib_latest_version"
+            format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+        else
+            log "WPILib is up to date ($wpilib_current_version)"
+        fi
+    fi
+
+    # Now update individual WPILib packages
     for package in "${!wpilib_packages[@]}"; do
         if [[ ${#PACKAGES[@]} -eq 0 ]] || printf '%s\n' "${PACKAGES[@]}" | grep -Fxq "$package"; then
             IFS=':' read -r file tool_name <<< "${wpilib_packages[$package]}"
             if [[ -f "$REPO_ROOT/$file" ]]; then
-                if update_wpilib_package "$package" "$REPO_ROOT/$file" "$tool_name"; then
-                    updated+=("$package")
+                if [[ "$wpilib_needs_update" == "true" ]]; then
+                    # Version already checked and updated, just update hashes
+                    if update_wpilib_package "$package" "$REPO_ROOT/$file" "$tool_name" "true" "$wpilib_latest_version"; then
+                        updated+=("$package")
+                    fi
+                else
+                    # Skip - already up to date
+                    verbose "  $package is up to date ($wpilib_current_version)"
                 fi
             fi
         fi
