@@ -13,7 +13,7 @@
 }:
 let
   pname = "advantage-scope";
-  version = "26.0.0-beta-2";
+  version = "26.0.0";
 
   src = fetchFromGitHub {
     owner = "Mechanical-Advantage";

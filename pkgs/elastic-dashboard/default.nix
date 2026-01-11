@@ -9,11 +9,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "elastic-dashboard";
-  version = "2025.2.2";
+  version = "null";
 
   src = fetchurl {
-    url = "https://github.com/Gold872/elastic-dashboard/releases/download/v${version}/Elastic-Linux.zip";
-    hash = "sha256-afuWtBvrJRmA91nHqHAljadrX5zGZwKQ8eTG/t3tnbg=";
+    url = "https://github.com/Gold872/elastic_dashboard/releases/download/v${version}/Elastic-Linux.zip";
+    hash = "sha256-ABnfxLMtY8E5KqJkrtIlPB4ML7CSFvjizCabv7i7SbU=";
   };
 
   nativeBuildInputs = [
@@ -60,7 +60,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     mainProgram = "elastic_dashboard";
     description = "A simple and modern dashboard for FRC";
-    homepage = "https://github.com/Gold872/elastic-dashboard";
+    homepage = "https://github.com/Gold872/elastic_dashboard";
     license = licenses.mit;
     platforms = platforms.all;
   };

@@ -170,7 +170,7 @@ fetch_github_hashes() {
             echo "aarch64-linux = \"$hash_arm64\";"
             ;;
         "Elastic")
-            local url="https://github.com/Gold872/elastic-dashboard/releases/download/v${version}/Elastic-Linux.zip"
+            local url="https://github.com/Gold872/elastic_dashboard/releases/download/v${version}/Elastic-Linux.zip"
             local hash
             hash=$(fetch_url_hash "$url")
             echo "hash = \"$hash\";"
@@ -324,13 +324,20 @@ update_hashes() {
         else
             # Single hash - replace hash line
             local hash_value
-            # Extract just the hash value from 'hash = "sha256-...";'
-            hash_value=${hash_output#*\"}
-            hash_value=${hash_value%\"*}
+            # Extract just the hash value from 'platform = "sha256-...";' or 'hash = "sha256-...";'
+            if [[ "$hash_output" =~ \"([^\"]+)\" ]]; then
+                hash_value="${BASH_REMATCH[1]}"
+            else
+                hash_value=${hash_output#*\"}
+                hash_value=${hash_value%\"*}
+            fi
 
             # For Choreo, only update the src hash (first occurrence)
             if [[ "$tool" == "Choreo" ]]; then
                 # Use sed with address to update only the first hash occurrence
+                sed -i '0,/hash = "[^"]*"/{s|hash = "[^"]*"|hash = "'"${hash_value}"'"|;}' "$file"
+            # For RobotBuilder, update the fetchurl hash
+            elif [[ "$tool" == "RobotBuilder" ]]; then
                 sed -i '0,/hash = "[^"]*"/{s|hash = "[^"]*"|hash = "'"${hash_value}"'"|;}' "$file"
             else
                 # Use | as delimiter to avoid issues with / in hash
@@ -436,8 +443,8 @@ update_wpilib_package() {
         tool_type="java"
     fi
 
-    # Update hashes if the file contains artifactHashes
-    if grep -q "artifactHashes" "$file"; then
+    # Update hashes if the file contains artifactHashes or a single hash field
+    if grep -q "artifactHashes\|hash = " "$file"; then
         update_hashes "$file" "$tool_name" "$new_version" "$tool_type" "release"
         format_nix_file "$file"
     fi
@@ -453,7 +460,7 @@ update_all_packages() {
     declare -A github_packages=(
         ["advantagescope"]="Mechanical-Advantage/AdvantageScope:pkgs/advantagescope/default.nix:AdvantageScope"
         ["choreo"]="SleipnirGroup/Choreo:pkgs/choreo/default.nix:Choreo"
-        ["elastic-dashboard"]="Gold872/elastic-dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
+        ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/default.nix:PathPlanner"
     )
 
