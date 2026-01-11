@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
@@ -55,8 +55,37 @@ jobs:
           echo "$updated_packages" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+            # Check if WPILib was updated
+            wpilib_update=""
+            if grep -q "==> WPILib update detected:" update_output.txt; then
+              wpilib_line=$(grep "==> WPILib update detected:" update_output.txt | sed 's/==> WPILib update detected: //')
+              old_ver=$(echo "$wpilib_line" | cut -d' ' -f1)
+              new_ver=$(echo "$wpilib_line" | cut -d' ' -f3)
+              
+              # Extract WPILib sub-packages (anything after "elastic-dashboard" in updated packages list)
+              wpilib_packages=$(grep "Updated packages:" update_output.txt | sed 's/==> Updated packages: //' | tr ' ' '\n' | grep -v "elastic-dashboard\|advantagescope\|choreo\|pathplanner")
+              
+              wpilib_update="- **WPILib**: \`$old_ver\` -> [\`$new_ver\`](https://github.com/wpilibsuite/allwpilib/releases/tag/v$new_ver)"
+              if [ -n "$wpilib_packages" ]; then
+                wpilib_update="$wpilib_update"$'\n'"  - Updated tools: $(echo "$wpilib_packages" | tr '\n' ',' | sed 's/,/, /g' | sed 's/, $//')"
+              fi
+            fi
+
             version_changes=$(
-              grep " -> " update_output.txt | sed 's/^  //' | while IFS=': ' read -r package versions; do
+              # First add WPILib if it was updated
+              if [ -n "$wpilib_update" ]; then
+                echo "$wpilib_update"
+              fi
+              
+              # Then add other packages (excluding WPILib tools)
+              grep " -> " update_output.txt | grep -v "^==>" | sed 's/^  //' | while IFS=': ' read -r package versions; do
+                # Skip WPILib sub-packages
+                case "$package" in
+                  glass|outlineviewer|datalogtool|shuffleboard|smartdashboard|roborioteamnumbersetter|robotbuilder|sysid|wpical|pathweaver)
+                    continue
+                    ;;
+                esac
+                
                 old_ver=$(echo "$versions" | cut -d' ' -f1)
                 new_ver=$(echo "$versions" | cut -d' ' -f3)
                 case "$package" in
@@ -67,7 +96,7 @@ jobs:
                     echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/SleipnirGroup/Choreo/releases/tag/v$new_ver)"
                     ;;
                   elastic-dashboard)
-                    echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/Gold872/elastic-dashboard/releases/tag/v$new_ver)"
+                    echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/Gold872/elastic_dashboard/releases/tag/v$new_ver)"
                     ;;
                   pathplanner)
                     echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/mjansen4857/pathplanner/releases/tag/v$new_ver)"
@@ -112,7 +141,7 @@ jobs:
         if: steps.check-updates.outputs.has_updates == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
           commit-message: |
             chore: update FRC packages and nixpkgs
 
