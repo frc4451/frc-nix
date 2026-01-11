@@ -19,8 +19,14 @@ let
     owner = "Mechanical-Advantage";
     repo = "AdvantageScope";
     tag = "v${version}";
-    hash = "sha256-s4A2XY3nQRwQdrTygyhxsbULOlm0mqGDireBg/TSWLE=";
+    hash = "sha256-ZkA7u/QlM5+w4l6ZrlRAxhtPelyLi4LqSjGs27IFGKU=";
   };
+
+  patches = [
+    ./0001-change-build-targets.patch
+    ./0001-fix-wasm-compile.patch
+    ./0001-switch-youtube-dl-to-patch-with-package-lock.json.patch
+  ];
 
   fetchersAtters = {
     inherit
@@ -28,13 +34,14 @@ let
       npmDepsHash
       src
       pname
+      patches
       ;
   };
 
   docs = callPackage ./docs.nix fetchersAtters;
   licenses = callPackage ./licenses.nix fetchersAtters;
   tesseract = callPackage ./tesseract-lang.nix fetchersAtters;
-  npmDepsHash = "sha256-4eerKCFQWdZ8G6YPf6rvLgF/C//oAVK6sdQNRJVK3YY=";
+  npmDepsHash = "sha256-SfgTiK4Bs5u1rxzytMeMue8xqn34fagYt2qzrhEkWfs=";
 in
 buildNpmPackage (finalAttrs: {
   inherit
@@ -42,12 +49,8 @@ buildNpmPackage (finalAttrs: {
     npmDepsHash
     src
     pname
+    patches
     ;
-
-  patches = [
-    ./0001-change-build-targets.patch
-    ./0001-fix-wasm-compile.patch
-  ];
 
   makeCacheWritable = true;
   npmFlags = [

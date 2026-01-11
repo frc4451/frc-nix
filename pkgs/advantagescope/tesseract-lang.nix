@@ -5,11 +5,12 @@
 , nodejs
 , npmDepsHash
 , cacert
+, patches
 , ...
 }:
 buildNpmPackage (finalAttrs: {
   pname = pname + "-tesseractLang";
-  inherit version src npmDepsHash;
+  inherit version src npmDepsHash patches;
 
   makeCacheWritable = true;
   npmFlags = [ "--ignore-scripts" ];
