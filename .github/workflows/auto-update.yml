@@ -81,7 +81,7 @@ jobs:
               grep " -> " update_output.txt | grep -v "^==>" | sed 's/^  //' | while IFS=': ' read -r package versions; do
                 # Skip WPILib sub-packages
                 case "$package" in
-                  glass|outlineviewer|datalogtool|shuffleboard|smartdashboard|roborioteamnumbersetter|robotbuilder|sysid|wpical|pathweaver)
+                  glass|outlineviewer|datalogtool|shuffleboard|smartdashboard|roborioteamnumbersetter|robotbuilder|sysid|wpical|pathweaver|vscode-wpilib)
                     continue
                     ;;
                 esac

@@ -154,6 +154,12 @@ fetch_github_hashes() {
     local version="$2"
 
     case "$tool" in
+        "vscode-wpilib")
+            local url="https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix"
+            local hash
+            hash=$(fetch_url_hash "$url")
+            echo "hash = \"$hash\";"
+            ;;
         "Choreo")
             local url="https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64-standalone.zip"
             local hash
@@ -437,9 +443,11 @@ update_wpilib_package() {
         echo "  Updating $name hashes for version $new_version"
     fi
 
-    # Determine if this is a Java or native tool
+    # Determine if this is a Java or native tool, or vscode extension
     local tool_type="native"
-    if grep -q "buildJavaTool" "$file"; then
+    if [[ "$name" == "vscode-wpilib" ]]; then
+        tool_type="github"
+    elif grep -q "buildJavaTool" "$file"; then
         tool_type="java"
     fi
 
@@ -485,6 +493,7 @@ update_all_packages() {
         ["smartdashboard"]="pkgs/wpilib/smartdashboard.nix:SmartDashboard"
         ["sysid"]="pkgs/wpilib/sysid.nix:SysId"
         ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
+        ["vscode-wpilib"]="pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
     )
 
     # Check WPILib version once for all packages
