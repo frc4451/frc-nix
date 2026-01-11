@@ -168,7 +168,7 @@ jobs:
           draft: false
           reviewers: |
             # Add maintainer usernames here:
-            taciturnaxolotl
+            # taciturnaxolotl disabled till we change pat
           author: GitHub Action <action@github.com>
 
       - name: Upload update log

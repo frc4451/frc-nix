@@ -12,5 +12,8 @@ result
 .clj-kondo
 .lsp
 
+# Update script output
+update_output.txt
+
 # Crush
 .crush
