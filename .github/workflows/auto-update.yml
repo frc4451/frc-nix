@@ -56,7 +56,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
             version_changes=$(
-              grep " -> " update_output.txt | sed 's/^  //' | while IFS=': ' read -r package versions; do
+              grep " -> " update_output.txt | grep -v "^==>" | sed 's/^  //' | while IFS=': ' read -r package versions; do
                 old_ver=$(echo "$versions" | cut -d' ' -f1)
                 new_ver=$(echo "$versions" | cut -d' ' -f3)
                 case "$package" in
@@ -67,7 +67,7 @@ jobs:
                     echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/SleipnirGroup/Choreo/releases/tag/v$new_ver)"
                     ;;
                   elastic-dashboard)
-                    echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/Gold872/elastic-dashboard/releases/tag/v$new_ver)"
+                    echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/Gold872/elastic_dashboard/releases/tag/v$new_ver)"
                     ;;
                   pathplanner)
                     echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/mjansen4857/pathplanner/releases/tag/v$new_ver)"

@@ -2,6 +2,7 @@ name: Nix Flake actions
 
 on:
   pull_request:
+  pull_request_target:
   push:
 
 jobs:
@@ -11,6 +12,8 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: cachix/install-nix-action@v30
       - uses: DeterminateSystems/flakehub-cache-action@main
       - id: set-matrix
@@ -28,6 +31,8 @@ jobs:
       matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: cachix/install-nix-action@v30
       - uses: DeterminateSystems/flakehub-cache-action@main
       - run: nix build -L '.#${{ matrix.attr }}'
