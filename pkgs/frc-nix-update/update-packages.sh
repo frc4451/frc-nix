@@ -245,6 +245,7 @@ format_nix_file() {
         fi
     fi
 }
+
 update_hashes() {
     local file="$1"
     local tool="$2"
@@ -376,22 +377,16 @@ update_github_package() {
     return 0  # Updated
 }
 
-# Update a WPILib package
-update_wpilib_package() {
-    local name="$1"
-    local file="$2"
-    local tool_name="$3"
+update_wpilib_packages() {
+    declare -n wpilib_packages_ref="$1"
+    declare -n updated_ref="$2"
 
-    log "Checking $name..."
+    local WPILIB_FILE="${REPO_ROOT}/pkgs/wpilib/default.nix"
 
-    # Skip if package is marked as broken
-    if is_package_broken "$file"; then
-        echo "  $name is marked as broken, skipping"
-        return 1  # Not updated
-    fi
+    log "Checking WPILib..."
 
     local current_version
-    current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
+    current_version=$(get_current_version "$WPILIB_FILE")
     current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
 
     if [[ -z "$current_version" ]]; then
@@ -400,30 +395,37 @@ update_wpilib_package() {
 
     local latest_version
     latest_version=$(get_wpilib_latest "release")
-    latest_version=$(echo "$latest_version" | head -1 | tr -d '[:space:]')
+    latest_version=$(echo "$latest_version" | tr -d '[:space:]')
 
     if [[ "$current_version" == "$latest_version" ]]; then
-    echo "  $name is up to date ($current_version)"
-    return 1  # Not updated
+        echo "  WPILib is up to date ($current_version)"
+        return 1  # Not updated
     fi
-
-    echo "  $name: $current_version -> $latest_version"
 
     # Update WPILib default.nix version
-    update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$latest_version"
-    format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+    update_version "$WPILIB_FILE" "$latest_version"
 
-    # Determine if this is a Java or native tool
-    local tool_type="native"
-    if grep -q "buildJavaTool" "$file"; then
-        tool_type="java"
-    fi
+    for package_name in "${!wpilib_packages_ref[@]}"; do
+        local tool_name="${wpilib_packages_ref[${package_name}]}"
+        local file="${REPO_ROOT}/pkgs/wpilib/${package_name}.nix"
 
-    # Update hashes if the file contains artifactHashes
-    if grep -q "artifactHashes" "$file"; then
-        update_hashes "$file" "$tool_name" "$latest_version" "$tool_type" "release"
-        format_nix_file "$file"
-    fi
+        if [[ -f "$file" ]]; then
+            echo "  $package_name: $current_version -> $latest_version"
+
+            # Determine if this is a Java or native tool
+            local tool_type="native"
+            if grep -q "buildJavaTool" "$file"; then
+                tool_type="java"
+            fi
+
+            # Update hashes if the file contains artifactHashes
+            if grep -q "artifactHashes" "$file"; then
+                update_hashes "$file" "$tool_name" "$latest_version" "$tool_type" "release"
+            fi
+
+            updated_ref+=("$package_name")
+        fi
+    done
 
     return 0  # Updated
 }
@@ -450,29 +452,23 @@ update_all_packages() {
     done
 
     # WPILib packages
+    # shellcheck disable=SC2034
+    # ^^ We do some weird stuff with -n
+    #    in update_wpilib_packages to pass this by "reference"
     declare -A wpilib_packages=(
-        ["glass"]="pkgs/wpilib/glass.nix:Glass"
-        ["datalogtool"]="pkgs/wpilib/datalogtool.nix:DataLogTool"
-        ["outlineviewer"]="pkgs/wpilib/outlineviewer.nix:OutlineViewer"
-        ["pathweaver"]="pkgs/wpilib/pathweaver.nix:PathWeaver"
-        ["roborioteamnumbersetter"]="pkgs/wpilib/roborioteamnumbersetter.nix:roboRIOTeamNumberSetter"
-        ["robotbuilder"]="pkgs/wpilib/robotbuilder.nix:RobotBuilder"
-        ["shuffleboard"]="pkgs/wpilib/shuffleboard.nix:Shuffleboard"
-        ["smartdashboard"]="pkgs/wpilib/smartdashboard.nix:SmartDashboard"
-        ["sysid"]="pkgs/wpilib/sysid.nix:SysId"
-        ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
+        ["glass"]="Glass"
+        ["datalogtool"]="DataLogTool"
+        ["outlineviewer"]="OutlineViewer"
+        ["pathweaver"]="PathWeaver"
+        ["roborioteamnumbersetter"]="roboRIOTeamNumberSetter"
+        ["robotbuilder"]="RobotBuilder"
+        ["shuffleboard"]="Shuffleboard"
+        ["smartdashboard"]="SmartDashboard"
+        ["sysid"]="SysId"
+        ["wpical"]="wpical"
     )
 
-    for package in "${!wpilib_packages[@]}"; do
-        if [[ ${#PACKAGES[@]} -eq 0 ]] || printf '%s\n' "${PACKAGES[@]}" | grep -Fxq "$package"; then
-            IFS=':' read -r file tool_name <<< "${wpilib_packages[$package]}"
-            if [[ -f "$REPO_ROOT/$file" ]]; then
-                if update_wpilib_package "$package" "$REPO_ROOT/$file" "$tool_name"; then
-                    updated+=("$package")
-                fi
-            fi
-        fi
-    done
+    update_wpilib_packages "wpilib_packages" "updated"
 
     # Summary
     if [[ ${#updated[@]} -gt 0 ]]; then
@@ -509,7 +505,8 @@ main() {
 
     update_all_packages
 
-    nix fmt "$REPO_ROOT"
+    log "Formatting"
+    nix fmt "$REPO_ROOT" >/dev/null
 }
 
 main "$@"
