@@ -1,12 +1,11 @@
-{
-  buildNpmPackage,
-  src,
-  pname,
-  version,
-  nodejs,
-  npmDepsHash,
-  cacert,
-  ...
+{ buildNpmPackage
+, src
+, pname
+, version
+, nodejs
+, npmDepsHash
+, cacert
+, ...
 }:
 buildNpmPackage (finalAttrs: {
   pname = pname + "-tesseractLang";

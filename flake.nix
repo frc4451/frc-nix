@@ -47,10 +47,11 @@
         let
           packages = import ./. { inherit pkgs; };
         in
-        lib.attrsets.filterAttrs (_: pkg: 
-          builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms
-          && !(pkg.meta.broken or false)
-        )
+        lib.attrsets.filterAttrs
+          (_: pkg:
+            builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms
+            && !(pkg.meta.broken or false)
+          )
           {
             inherit (packages)
               advantagescope
