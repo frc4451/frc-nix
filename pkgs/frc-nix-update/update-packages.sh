@@ -10,6 +10,9 @@ DRY_RUN=false
 PACKAGES=()
 VERBOSE=false
 
+WPILIB_BRANCH="release"
+WPILIB_SKIP_BETA_ALPHA=true
+
 usage() {
     cat << EOF
 Usage: $0 [OPTIONS] [PACKAGE...]
@@ -75,14 +78,20 @@ get_github_latest() {
         jq -r '.tag_name' | sed 's/^v//'
 }
 
+get_wpilib_versions() {
+    curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/${WPILIB_BRANCH}/edu/wpi/first/wpilibj/wpilibj-java" \
+        | jq -r '.children[] | select(.folder == true) | .uri' \
+        | sed 's|^/||; s|/$||' \
+        | sort -V
+}
+
 # Get latest WPILib version
 get_wpilib_latest() {
-    local branch="${1:-release}"
-    curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/$branch/edu/wpi/first/wpilibj/wpilibj-java" | \
-        jq -r '.children[] | select(.folder == true) | .uri' | \
-        sed 's|^/||; s|/$||' | \
-        sort -V | \
-        tail -1
+    if [[ $WPILIB_SKIP_BETA_ALPHA == true ]]; then
+        get_wpilib_versions | grep -v '\-[alpha|beta]' | tail -1
+    else
+        get_wpilib_versions | tail -1
+    fi
 }
 
 # Extract current version from Nix file
@@ -175,9 +184,8 @@ fetch_github_hashes() {
 fetch_wpilib_hashes() {
     local tool="$1"
     local version="$2"
-    local branch="${3:-release}"
 
-    local program_url="https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}"
+    local program_url="https://frcmaven.wpi.edu/artifactory/api/storage/${WPILIB_BRANCH}/edu/wpi/first/tools/${tool}/${version}"
     local program_response
     program_response=$(curl -s "$program_url")
 
@@ -191,7 +199,7 @@ fetch_wpilib_hashes() {
         [[ "$file_uri" == *windows* ]] && continue
         [[ "$file_uri" == *win* ]] && continue
 
-        local file_url="https://frcmaven.wpi.edu/artifactory/api/storage/${branch}/edu/wpi/first/tools/${tool}/${version}${file_uri}"
+        local file_url="https://frcmaven.wpi.edu/artifactory/api/storage/${WPILIB_BRANCH}/edu/wpi/first/tools/${tool}/${version}${file_uri}"
         local file_response
         file_response=$(curl -s "$file_url")
 
@@ -242,7 +250,6 @@ update_hashes() {
     local tool="$2"
     local version="$3"
     local type="$4"
-    local branch="${5:-}"
 
     if [[ "$DRY_RUN" == "true" ]]; then
         return 0
@@ -257,7 +264,7 @@ update_hashes() {
             hash_output=$(fetch_github_hashes "$tool" "$version")
             ;;
         "native"|"java")
-            hash_output=$(fetch_wpilib_hashes "$tool" "$version" "$branch")
+            hash_output=$(fetch_wpilib_hashes "$tool" "$version" "$WPILIB_BRANCH")
             ;;
         *)
             error "Unknown hash type: $type"
