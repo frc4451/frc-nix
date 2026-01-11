@@ -1,15 +1,15 @@
-{
-  lib,
-  buildNpmPackage,
-  fetchFromGitHub,
-  emscripten,
-  electron,
-  libGL,
-  makeWrapper,
-  makeDesktopItem,
-  copyDesktopItems,
-  callPackage,
-  isWPILibVersion ? false,
+{ lib
+, buildNpmPackage
+, fetchFromGitHub
+, emscripten
+, electron
+, libGL
+, makeWrapper
+, makeDesktopItem
+, copyDesktopItems
+, callPackage
+, isWPILibVersion ? false
+,
 }:
 let
   pname = "advantage-scope";
