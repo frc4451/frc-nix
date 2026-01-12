@@ -5,16 +5,16 @@
 , copyDesktopItems
 , unzip
 , wrapGAppsHook3
-, webkitgtk_4_0
+, webkitgtk_4_1
 , makeDesktopItem
 }:
 let
   pname = "choreo";
-  version = "2025.0.3";
+  version = "2026.0.1";
 
   src = fetchurl {
     url = "https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64-standalone.zip";
-    hash = "sha256-sB7en5sPEJfDRBL8CYLCLeTXYp46n3K6qXG4w/w1aZI=";
+    hash = "sha256-scFL0lo9rhVZBPpqLeLoWcGPiXhDMvrDQEjp6TlwsKg=";
   };
 
   icon = fetchurl {
@@ -36,7 +36,7 @@ stdenv.mkDerivation {
   ];
 
   buildInputs = [
-    webkitgtk_4_0
+    webkitgtk_4_1
   ];
 
   sourceRoot = ".";
@@ -71,6 +71,5 @@ stdenv.mkDerivation {
     license = licenses.bsd3;
     mainProgram = "choreo";
     platforms = [ "x86_64-linux" ];
-    broken = true;
   };
 }
