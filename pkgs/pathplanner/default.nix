@@ -1,5 +1,5 @@
 { lib
-, flutter332
+, flutter
 , fetchFromGitHub
 , copyDesktopItems
 , stdenv
@@ -7,7 +7,7 @@
 , libuuid
 , makeDesktopItem
 }:
-flutter332.buildFlutterApplication rec {
+flutter.buildFlutterApplication rec {
   pname = "pathplanner";
   version = "2026.1.2";
 
