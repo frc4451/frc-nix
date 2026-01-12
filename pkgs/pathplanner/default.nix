@@ -18,8 +18,6 @@ flutter332.buildFlutterApplication rec {
     hash = "sha256-ocqBviTfMxjdJdEu++yqUY9JTLs1qEnP94w6HCFp5f0=";
   };
 
-  autoPubspecLock = src + "/pubspec.lock";
-
   nativeBuildInputs = [ copyDesktopItems ];
 
   buildInputs =
