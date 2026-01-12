@@ -9,13 +9,13 @@
 }:
 flutter332.buildFlutterApplication rec {
   pname = "pathplanner";
-  version = "2025.2.2";
+  version = "2026.1.2";
 
   src = fetchFromGitHub {
     owner = "mjansen4857";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-RTLesH7j3R9JbvNr46Tk8bHbCeMm0daeTaxSOibkPjM=";
+    hash = "sha256-ocqBviTfMxjdJdEu++yqUY9JTLs1qEnP94w6HCFp5f0=";
   };
 
   autoPubspecLock = src + "/pubspec.lock";
