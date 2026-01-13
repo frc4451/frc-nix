@@ -126,6 +126,7 @@ buildNpmPackage (finalAttrs: {
     homepage = "https://docs.advantagescope.org/";
     license = lib.licenses.bsd3;
     maintainers = with lib.maintainers; [ me-it-is ];
+    platforms = [ "x86_64-linux" "aarch64-linux" ];
   };
 
   nativeBuildInputs = [
