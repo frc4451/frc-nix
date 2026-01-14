@@ -46,11 +46,11 @@ let
 
   system = stdenv.hostPlatform.system;
 
-  finalOutDir = 
-  {
-    "x86_64-linux" = "linux-unpacked";
-    "aarch64-linux" = "linux-arm64-unpacked";
-  }."${system}" or (throw "Unsupported system: ${system}");
+  finalOutDir =
+    {
+      "x86_64-linux" = "linux-unpacked";
+      "aarch64-linux" = "linux-arm64-unpacked";
+    }."${system}" or (throw "Unsupported system: ${system}");
 in
 buildNpmPackage (finalAttrs: {
   inherit

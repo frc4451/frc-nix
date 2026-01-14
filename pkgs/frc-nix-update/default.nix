@@ -5,7 +5,7 @@
 , gnused
 , gawk
 , coreutils
-, nix-prefetch-git
+, nix
 ,
 }:
 
@@ -18,7 +18,7 @@ writeShellApplication {
     gnused
     gawk
     coreutils
-    nix-prefetch-git
+    nix
   ];
 
   text = builtins.readFile ./update-packages.sh;

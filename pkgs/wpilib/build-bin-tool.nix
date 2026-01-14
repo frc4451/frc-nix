@@ -68,9 +68,10 @@ stdenv.mkDerivation ({
   };
 
   nativeBuildInputs = [
-    autoPatchelfHook
     copyDesktopItems
     unzip
+  ] ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [
+    autoPatchelfHook
   ];
 
   buildInputs = libraries;
@@ -87,7 +88,25 @@ stdenv.mkDerivation ({
   installPhase = with lib.strings; ''
     runHook preInstall
 
-    install -Dm 755 ${wpilibSystem.os}/${wpilibSystem.arch}/${mainProgram} $out/bin/${mainProgram}
+    ${if stdenv.hostPlatform.isDarwin then ''
+      # macOS ships as .app bundles
+      if [ -d ${wpilibSystem.os}/${wpilibSystem.arch}/${name}.app ]; then
+        mkdir -p $out/Applications
+        cp -r ${wpilibSystem.os}/${wpilibSystem.arch}/${name}.app $out/Applications/
+
+        mkdir -p $out/bin
+        cat > $out/bin/${mainProgram} << 'WRAPPER_EOF'
+#!/bin/sh
+exec "$out/Applications/${name}.app/Contents/MacOS/${mainProgram}" "$@"
+WRAPPER_EOF
+        chmod +x $out/bin/${mainProgram}
+      else
+        # Fallback to plain binary if .app doesn't exist
+        install -Dm 755 ${wpilibSystem.os}/${wpilibSystem.arch}/${mainProgram} $out/bin/${mainProgram}
+      fi
+    '' else ''
+      install -Dm 755 ${wpilibSystem.os}/${wpilibSystem.arch}/${mainProgram} $out/bin/${mainProgram}
+    ''}
 
     ${optionalString (iconPng != null) "install -Dm 555 ${iconPng} $out/share/pixmaps/${name}.png"}
     ${optionalString (iconSvg != null) "install -Dm 555 ${iconSvg} $out/share/icons/hicolor/scalable/apps/${name}.svg"}
@@ -106,7 +125,7 @@ stdenv.mkDerivation ({
   ];
 
   meta = (with lib; {
-    platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-darwin" ];
+    platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-darwin" "aarch64-darwin" ];
     license = licenses.bsd3;
   } // meta);
 } // removeAttrs args [ "name" "artifactHashes" "extraLibs" "meta" ])

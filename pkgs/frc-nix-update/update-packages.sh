@@ -148,6 +148,35 @@ hex_to_sri() {
     nix-hash --type sha256 --to-sri "$hex" | tr -d '\n'
 }
 
+# Update allwpilibSources hash in WPILib default.nix
+update_allwpilib_sources_hash() {
+    local version="$1"
+    local file="$REPO_ROOT/pkgs/wpilib/default.nix"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        return 0
+    fi
+    
+    verbose "Fetching allwpilibSources hash for version $version"
+    
+    # Fetch the GitHub tarball and compute its hash
+    local url="https://github.com/wpilibsuite/allwpilib/archive/refs/tags/v${version}.tar.gz"
+    local hash
+    hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+    
+    if [[ -z "$hash" ]]; then
+        error "Failed to fetch allwpilibSources hash for version $version"
+    fi
+    
+    # Convert to SRI format
+    hash=$(nix hash convert --hash-algo sha256 --to sri "$hash" | tr -d '\n')
+    
+    verbose "Got hash: $hash"
+    
+    # Update the hash in default.nix
+    sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"$hash\"|" "$file"
+}
+
 # Fetch hashes for GitHub releases
 fetch_github_hashes() {
     local tool="$1"
@@ -182,12 +211,18 @@ fetch_github_hashes() {
             echo "hash = \"$hash\";"
             ;;
         "PathPlanner")
-            local output hash
-            if ! output=$(nix-prefetch-git "https://github.com/mjansen4857/pathplanner" "v${version}") || [ -z "$output" ]; then
-                echo "Error: nix-prefetch-git failed for PathPlanner v${version}" >&2
+            local hash
+            # Fetch the GitHub tarball and compute its hash
+            local url="https://github.com/mjansen4857/pathplanner/archive/refs/tags/v${version}.tar.gz"
+            hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+            
+            if [[ -z "$hash" ]]; then
+                echo "Error: Failed to fetch hash for PathPlanner v${version}" >&2
                 return 1
             fi
-            hash=$(echo "$output" | jq -r '.hash')
+            
+            # Convert to SRI format
+            hash=$(nix hash convert --hash-algo sha256 --to sri "$hash" | tr -d '\n')
             echo "hash = \"$hash\";"
             ;;
     esac
@@ -536,6 +571,11 @@ update_all_packages() {
             # Update default.nix version once
             echo "  Updating WPILib version in default.nix"
             update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$wpilib_latest_version"
+            
+            # Update allwpilibSources hash
+            echo "  Updating allwpilibSources hash"
+            update_allwpilib_sources_hash "$wpilib_latest_version"
+            
             format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
         else
             log "WPILib is up to date ($wpilib_current_version)"
@@ -575,7 +615,7 @@ update_all_packages() {
 check_deps() {
     local missing=()
 
-    for cmd in curl jq sed awk nix-prefetch-git nix; do
+    for cmd in curl jq sed awk nix; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing+=("$cmd")
         fi
