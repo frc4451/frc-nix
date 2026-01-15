@@ -505,6 +505,7 @@ update_all_packages() {
         ["choreo"]="SleipnirGroup/Choreo:pkgs/choreo/default.nix:Choreo"
         ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/default.nix:PathPlanner"
+        ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
     )
 
     for package in "${!github_packages[@]}"; do
@@ -528,7 +529,6 @@ update_all_packages() {
         ["smartdashboard"]="pkgs/wpilib/smartdashboard.nix:SmartDashboard"
         ["sysid"]="pkgs/wpilib/sysid.nix:SysId"
         ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
-        ["vscode-wpilib"]="pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
     )
 
     # Check WPILib version once for all packages
