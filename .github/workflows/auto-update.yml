@@ -88,6 +88,12 @@ jobs:
                 
                 old_ver=$(echo "$versions" | cut -d' ' -f1)
                 new_ver=$(echo "$versions" | cut -d' ' -f3)
+                
+                # Skip if either version is empty or if versions are the same
+                if [ -z "$old_ver" ] || [ -z "$new_ver" ] || [ -z "$package" ] || [ "$old_ver" = "$new_ver" ]; then
+                  continue
+                fi
+                
                 case "$package" in
                   advantagescope)
                     echo "- $package: \`$old_ver\` -> [\`$new_ver\`](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v$new_ver)"

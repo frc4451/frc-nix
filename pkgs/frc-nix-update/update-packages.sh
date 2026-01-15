@@ -105,7 +105,7 @@ version_less_than() {
 get_current_version() {
     local file="$1"
     # Try different version patterns
-    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/default.nix" ]]; then
+    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/default.nix" && ! "$file" == *"/vscode-extension.nix" ]]; then
         # WPILib packages that inherit version from allwpilibSources
         grep -o 'version = "[^"]*"' "$REPO_ROOT/pkgs/wpilib/default.nix" | sed 's/version = "//; s/"//' || echo ""
     else
@@ -505,6 +505,7 @@ update_all_packages() {
         ["choreo"]="SleipnirGroup/Choreo:pkgs/choreo/default.nix:Choreo"
         ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/default.nix:PathPlanner"
+        ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
     )
 
     for package in "${!github_packages[@]}"; do
@@ -528,7 +529,6 @@ update_all_packages() {
         ["smartdashboard"]="pkgs/wpilib/smartdashboard.nix:SmartDashboard"
         ["sysid"]="pkgs/wpilib/sysid.nix:SysId"
         ["wpical"]="pkgs/wpilib/wpical.nix:wpical"
-        ["vscode-wpilib"]="pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
     )
 
     # Check WPILib version once for all packages

@@ -5,7 +5,7 @@
 , lib
 }:
 vscode-utils.buildVscodeExtension rec {
-  inherit (allwpilibSources) version;
+  version = "2026.1.1";
 
   pname = "${vscodeExtPublisher}-${vscodeExtName}";
   name = "${vscodeExtPublisher}-${vscodeExtName}-${version}";
