@@ -4,15 +4,15 @@ lib.makeScope pkgs.newScope (self: with self; {
   allwpilibSources = fetchFromGitHub rec {
     passthru = {
       branch = "release";
-      version = "2026.1.1";
-      java.version = "2026.1.1";
-      native.version = "2026.1.1";
+      version = "2026.2.1";
+      java.version = "2026.2.1";
+      native.version = "2026.2.1";
     };
 
     owner = "wpilibsuite";
     repo = "allwpilib";
     rev = "v${passthru.version}";
-    hash = "sha256-deBeDguJckUxh+1E8dSzR1xKa/f+Q4qU2AOG2F9sKAU=";
+    hash = "sha256-JKhd8s10sgWtV3cMYP9hVlbydvulyaFtRjn19gnFAfE=";
   };
 
   buildBinTool = callPackage ./build-bin-tool.nix { };
