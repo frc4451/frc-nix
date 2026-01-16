@@ -6,10 +6,10 @@ buildBinTool {
   name = "OutlineViewer";
 
   artifactHashes = {
-    linuxarm32 = "sha256-PX1rSGVxU22zBXp0a83GGeq83rLCWPw2evBITkJr1q8=";
-    linuxarm64 = "sha256-0YI8QV+Glq1BCdbjhuif4qG0im+0yIl8pOB2FXG9EuI=";
-    linuxx86-64 = "sha256-Deh3li6GSJ919l0iPAXh29B3D7bwgcQzKOkgl7hGnWo=";
-    osxuniversal = "sha256-Qa7G3q/wZ4QyM0U2A4HbEuWcH+q4XaNCDYaqPJ0DEhE=";
+    linuxarm32 = "sha256-mUO2wCjuYae4/cY3voRqgLpLVHq14BoDCIFYfAUHdU4=";
+    linuxarm64 = "sha256-8Wcz/9Nj5M/384fyOKkTAFyiOeILc4chsRSS0docidk=";
+    linuxx86-64 = "sha256-3+fanb9EJMOu4wX35H+rvkNGe8+KG6B9/YyUhexNfY0=";
+    osxuniversal = "sha256-e5l18l/m/4eYjJC6Sf5lBwbtVaSDi2RaWGSAmMMsuT4=";
   };
 
   iconPng = "${allwpilibSources}/outlineviewer/src/main/native/resources/ov-512.png";
