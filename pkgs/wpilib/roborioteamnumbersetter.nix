@@ -6,10 +6,10 @@ buildBinTool {
   name = "roboRIOTeamNumberSetter";
 
   artifactHashes = {
-    linuxarm32 = "sha256-/i2t0bUJFiA5gIEc3Xk1Mh0JM34R6Oo2vk/o2vTgxtg=";
-    linuxarm64 = "sha256-EGfcYnLvJUpJMfkHBZSfKPCMtrI7nVNGrs0UDwWqLCU=";
-    linuxx86-64 = "sha256-eLTkHADQZapX0Yl4YSFd7Zepd0Uiu8/QBMyMaYYd5Ms=";
-    osxuniversal = "sha256-zmkjmq0ngPMKmGX1BRKbwzsi2c/UA1vCAk3brXuj8WQ=";
+    linuxarm32 = "sha256-ujotjEYmSObuhg/5ULJyZkwfzNdgeKjY+TPLaynAA7U=";
+    linuxarm64 = "sha256-GmuxrirKrXHL9CHPJEjDKxnUartH/9V4bjIR+iiqzWo=";
+    linuxx86-64 = "sha256-vufFRnebgiQi2RlFppxhSPzsaHZ+xiYsnvOUDzFM7fs=";
+    osxuniversal = "sha256-pTfasbEZtIqmZ7rc6hvcDmVNt7K8Bgnib+m/B/QsOQk=";
   };
 
   extraLibs = [ avahi ];

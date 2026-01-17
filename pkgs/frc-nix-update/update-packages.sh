@@ -9,6 +9,7 @@ REPO_ROOT="${REPO_ROOT:-$(pwd)}"
 DRY_RUN=false
 PACKAGES=()
 VERBOSE=false
+FORCE=false
 
 usage() {
     cat << EOF
@@ -18,12 +19,14 @@ Update FRC Nix packages to their latest versions.
 
 OPTIONS:
     --dry-run       Show what would be updated without making changes
+    --force         Force refetch hashes even if version hasn't changed
     --verbose       Show detailed output
     --help          Show this help message
 
 EXAMPLES:
     $0                          # Update all packages
     $0 --dry-run                # Show what would be updated
+    $0 --force choreo           # Force refetch hashes for choreo
     $0 choreo advantagescope    # Update specific packages
 EOF
 }
@@ -48,6 +51,10 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --dry-run)
             DRY_RUN=true
+            shift
+            ;;
+        --force)
+            FORCE=true
             shift
             ;;
         --verbose)
@@ -289,7 +296,7 @@ format_nix_file() {
     # Run nix fmt on the file, but only if it exists and is a .nix file
     if [[ -f "$file" && "$file" == *.nix ]]; then
         # Change to repo root to ensure nix fmt can find flake.nix
-        if ! (cd "$REPO_ROOT" && nix fmt "$file" 2>/dev/null); then
+        if ! (cd "$REPO_ROOT" && nix fmt "$file" >/dev/null 2>&1); then
             echo "Warning: nix fmt failed for $file" >&2
         fi
     fi
@@ -420,8 +427,14 @@ update_github_package() {
     latest_version=$(get_github_latest "$repo")
 
     if [[ "$current_version" == "$latest_version" ]]; then
-    echo "  $name is up to date ($current_version)"
-    return 1  # Not updated
+        if [[ "$FORCE" == "true" ]]; then
+            echo "  $name: force refetching hashes ($current_version)"
+            update_hashes "$file" "$tool_name" "$current_version" "github"
+            format_nix_file "$file"
+            return 0  # Updated
+        fi
+        echo "  $name is up to date ($current_version)"
+        return 1  # Not updated
     fi
 
     echo "  $name: $current_version -> $latest_version"
@@ -577,6 +590,10 @@ update_all_packages() {
             update_allwpilib_sources_hash "$wpilib_latest_version"
             
             format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+        elif [[ "$FORCE" == "true" ]]; then
+            wpilib_needs_update=true
+            wpilib_latest_version="$wpilib_current_version"
+            log "WPILib: force refetching hashes ($wpilib_current_version)"
         else
             log "WPILib is up to date ($wpilib_current_version)"
         fi
@@ -590,6 +607,12 @@ update_all_packages() {
                 if [[ "$wpilib_needs_update" == "true" ]]; then
                     # Version already checked and updated, just update hashes
                     if update_wpilib_package "$package" "$REPO_ROOT/$file" "$tool_name" "true" "$wpilib_latest_version"; then
+                        updated+=("$package")
+                    fi
+                elif [[ "$FORCE" == "true" ]]; then
+                    # Force refetch hashes even if version hasn't changed
+                    echo "  $package: force refetching hashes ($wpilib_current_version)"
+                    if update_wpilib_package "$package" "$REPO_ROOT/$file" "$tool_name" "true" "$wpilib_current_version"; then
                         updated+=("$package")
                     fi
                 else
@@ -635,7 +658,7 @@ main() {
 
     update_all_packages
 
-    nix fmt "$REPO_ROOT"
+    nix fmt "$REPO_ROOT" >/dev/null 2>&1
 }
 
 main "$@"
