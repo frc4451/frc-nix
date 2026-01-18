@@ -193,7 +193,13 @@ fetch_github_hashes() {
         "vscode-wpilib")
             local url="https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix"
             local hash
-            hash=$(fetch_url_hash "$url")
+            # VSIX is a zip file, use nix-prefetch-url directly for accurate hash
+            hash=$(nix-prefetch-url "$url" 2>/dev/null | tail -1)
+            if [[ -z "$hash" ]]; then
+                echo "Error: Failed to fetch hash for vscode-wpilib v${version}" >&2
+                return 1
+            fi
+            hash=$(nix hash convert --hash-algo sha256 --to sri "$hash" | tr -d '\n')
             echo "hash = \"$hash\";"
             ;;
         "Choreo")
@@ -491,11 +497,9 @@ update_wpilib_package() {
         echo "  Updating $name hashes for version $new_version"
     fi
 
-    # Determine if this is a Java or native tool, or vscode extension
+    # Determine if this is a Java or native tool
     local tool_type="native"
-    if [[ "$name" == "vscode-wpilib" ]]; then
-        tool_type="github"
-    elif grep -q "buildJavaTool" "$file"; then
+    if grep -q "buildJavaTool" "$file"; then
         tool_type="java"
     fi
 
