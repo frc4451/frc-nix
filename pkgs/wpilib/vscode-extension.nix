@@ -5,14 +5,14 @@
 , lib
 }:
 vscode-utils.buildVscodeExtension rec {
-  version = "2026.1.1";
+  version = "2026.2.1";
 
   pname = "${vscodeExtPublisher}-${vscodeExtName}";
   name = "${vscodeExtPublisher}-${vscodeExtName}-${version}";
 
   src = fetchurl {
     url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/vscode-wpilib-${version}.vsix";
-    hash = "sha256-+wzawFLCCY9L4957XROJQzOoURDwNhVQuQwgCCBPGxY=";
+    hash = "sha256-Qj9CHQk8ODZiILGEbhBdBl5wLpAf9RsYa7avYT4ns7Y=";
     # TODO: Once the version of nixpkgs in this flake is updated we should remove
     # the custom `name` and the `unzip` nativeBuildInput
     # See: https://github.com/NixOS/nixpkgs/commit/e24a734076ea21365bb618d63f5c9a70006dd196
