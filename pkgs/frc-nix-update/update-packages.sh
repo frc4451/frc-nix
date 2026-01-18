@@ -594,6 +594,12 @@ update_all_packages() {
             wpilib_needs_update=true
             wpilib_latest_version="$wpilib_current_version"
             log "WPILib: force refetching hashes ($wpilib_current_version)"
+            
+            # Update allwpilibSources hash even when forcing
+            echo "  Updating allwpilibSources hash"
+            update_allwpilib_sources_hash "$wpilib_latest_version"
+            
+            format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
         else
             log "WPILib is up to date ($wpilib_current_version)"
         fi
