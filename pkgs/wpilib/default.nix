@@ -12,7 +12,7 @@ lib.makeScope pkgs.newScope (self: with self; {
     owner = "wpilibsuite";
     repo = "allwpilib";
     rev = "v${passthru.version}";
-    hash = "sha256-JKhd8s10sgWtV3cMYP9hVlbydvulyaFtRjn19gnFAfE=";
+    hash = "sha256-Zt82Rh1iB7E0Uxtf4xKbyWZW3gk7Oc9L96JO49X0Ux8=";
   };
 
   buildBinTool = callPackage ./build-bin-tool.nix { };
