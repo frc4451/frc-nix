@@ -35,12 +35,7 @@
         checks = lib.getAttrs [ "x86_64-linux" ] self.packages;
       };
 
-      overlays.default =
-        final: prev:
-        import ./. {
-          pkgs = final;
-          inherit prev;
-        };
+      overlays.default = import ./overlay.nix;
 
       legacyPackages = forEachPkgs (pkgs: import ./default.nix { inherit pkgs; });
       packages = forEachPkgs (
