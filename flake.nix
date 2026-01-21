@@ -40,9 +40,12 @@
       legacyPackages = forEachPkgs (pkgs: import ./default.nix { inherit pkgs; });
       packages = forEachPkgs (
         pkgs:
-        pkgs.lib.filterAttrs (
-          _: v: pkgs.lib.isDerivation v
-        ) self.legacyPackages.${pkgs.stdenv.hostPlatform.system}
+        pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) (
+          let
+            packages = self.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+          in
+          packages // packages.wpilib
+        )
       );
 
       formatter = forEachPkgs (pkgs: pkgs.nixfmt-tree);
