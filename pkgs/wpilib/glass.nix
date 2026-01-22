@@ -3,7 +3,7 @@
 buildBinTool {
   pname = "glass";
 
-  name = "Glass";
+  humanName = "Glass";
 
   artifactHashes = {
     linuxarm32 = "sha256-3unu+iMeTTo07amvmxE1gwQ7jR8fPAlNtUrDnru2sB8=";
@@ -14,7 +14,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/glass/src/app/native/resources/glass-512.png";
 
-  meta = {
-    description = "A dashboard and data visualization tool for FRC robots";
-  };
+  meta.description = "A dashboard and data visualization tool for FRC robots";
 }

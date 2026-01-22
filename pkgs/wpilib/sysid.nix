@@ -3,7 +3,7 @@
 buildBinTool {
   pname = "sysid";
 
-  name = "SysId";
+  humanName = "SysId";
 
   artifactHashes = {
     linuxarm32 = "sha256-uu3woo6Y7xKKDXYvEYUMEpoSjEfDlsVltY/GPfAL6uM=";
@@ -14,7 +14,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/sysid/src/main/native/resources/sysid-512.png";
 
-  meta = {
-    description = "A tool for performing system identification on FRC robots";
-  };
+  meta.description = "A tool for performing system identification on FRC robots";
 }

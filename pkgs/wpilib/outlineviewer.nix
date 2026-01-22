@@ -3,7 +3,7 @@
 buildBinTool {
   pname = "outlineviewer";
 
-  name = "OutlineViewer";
+  humanName = "OutlineViewer";
 
   artifactHashes = {
     linuxarm32 = "sha256-6Eha5glKbAhXA5WbFUuWNWLeXJECV7psMrbWXOKbgZw=";
@@ -14,7 +14,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/outlineviewer/src/main/native/resources/ov-512.png";
 
-  meta = {
-    description = "A utility used to view, modify and add to the contents of NetworkTables";
-  };
+  meta.description = "A utility used to view, modify and add to the contents of NetworkTables";
 }
