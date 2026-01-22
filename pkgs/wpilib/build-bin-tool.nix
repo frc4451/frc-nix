@@ -6,8 +6,10 @@
 , autoPatchelfHook
 , copyDesktopItems
 , makeDesktopItem
+, makeWrapper
 , libGL
 , xorg
+, zenity
 }:
 
 { name
@@ -16,6 +18,7 @@
 , iconPng ? null
 , iconSvg ? null
 , extraLibs ? [ ]
+, fileDialogPackage ? zenity
 , meta ? { }
 , ...
 } @ args:
@@ -69,6 +72,7 @@ stdenv.mkDerivation ({
 
   nativeBuildInputs = [
     copyDesktopItems
+    makeWrapper
     unzip
   ] ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [
     autoPatchelfHook
@@ -114,6 +118,11 @@ stdenv.mkDerivation ({
         runHook postInstall
   '';
 
+  postFixup = lib.optionalString (fileDialogPackage != null) ''
+    wrapProgram $out/bin/${mainProgram} \
+      --prefix PATH : ${lib.makeBinPath [ fileDialogPackage ]}
+  '';
+
   desktopItems = [
     (makeDesktopItem {
       inherit name;
@@ -128,4 +137,4 @@ stdenv.mkDerivation ({
     platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-darwin" "aarch64-darwin" ];
     license = licenses.bsd3;
   } // meta);
-} // removeAttrs args [ "name" "artifactHashes" "extraLibs" "meta" ])
+} // removeAttrs args [ "name" "artifactHashes" "extraLibs" "fileDialogPackage" "meta" ])
