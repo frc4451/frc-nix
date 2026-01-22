@@ -7,7 +7,7 @@
 buildBinTool {
   pname = "roborioteamnumbersetter";
 
-  name = "roboRIOTeamNumberSetter";
+  humanName = "roboRIOTeamNumberSetter";
 
   artifactHashes = {
     linuxarm32 = "sha256-ujotjEYmSObuhg/5ULJyZkwfzNdgeKjY+TPLaynAA7U=";
@@ -20,7 +20,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/roborioteamnumbersetter/src/main/native/resources/rtns-512.png";
 
-  meta = {
-    description = "A trajectory generation suite for FRC teams";
-  };
+  meta.description = "A trajectory generation suite for FRC teams";
 }

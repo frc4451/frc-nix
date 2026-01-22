@@ -3,7 +3,7 @@
 buildBinTool {
   pname = "datalogtool";
 
-  name = "DataLogTool";
+  humanName = "DataLogTool";
 
   artifactHashes = {
     linuxarm32 = "sha256-/YKJk/XFrQu4Px8BEUwd1+AN966C3k/60mHahxSLNkk=";
@@ -14,7 +14,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/datalogtool/src/main/native/resources/dlt-512.png";
 
-  meta = {
-    description = "A tool for downloading logs from FRC robots";
-  };
+  meta.description = "A tool for downloading logs from FRC robots";
 }

@@ -7,7 +7,7 @@
 buildBinTool {
   pname = "wpical";
 
-  name = "wpical";
+  humanName = "wpical";
 
   artifactHashes = {
     linuxarm32 = "sha256-aBnQBQ25ofuVJXwjz8SnFjPmEIUL+1WK1w+i1GIltLM=";
@@ -20,7 +20,5 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/wpical/src/main/native/resources/wpical-512.png";
 
-  meta = {
-    description = "Field Calibration Tool";
-  };
+  meta.description = "Field Calibration Tool";
 }
