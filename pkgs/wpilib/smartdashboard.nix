@@ -3,7 +3,7 @@
 buildJavaTool {
   pname = "smartdashboard";
 
-  name = "SmartDashboard";
+  humanName = "SmartDashboard";
 
   artifactHashes = {
     linuxx64 = "sha256-47/7ICwj4LjndDJKpB2RuDR/XVtOMzqYLjG1aLi1LmM=";

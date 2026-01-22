@@ -3,7 +3,7 @@
 buildJavaTool {
   pname = "pathweaver";
 
-  name = "PathWeaver";
+  humanName = "PathWeaver";
 
   artifactHashes = {
     linuxarm32 = "sha256-rwSz811g2NhLqPbvH1SJ4tLMzb4Xr7ulSHQZfZBIh30=";
