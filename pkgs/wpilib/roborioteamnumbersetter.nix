@@ -1,4 +1,8 @@
-{ buildBinTool, avahi, allwpilibSources }:
+{
+  buildBinTool,
+  avahi,
+  allwpilibSources,
+}:
 
 buildBinTool {
   pname = "roborioteamnumbersetter";

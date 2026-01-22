@@ -1,8 +1,9 @@
-{ vscode-utils
-, allwpilibSources
-, fetchurl
-, unzip
-, lib
+{
+  vscode-utils,
+  allwpilibSources,
+  fetchurl,
+  unzip,
+  lib,
 }:
 vscode-utils.buildVscodeExtension rec {
   version = "2026.2.1";
@@ -35,6 +36,12 @@ vscode-utils.buildVscodeExtension rec {
     description = "Visual Studio Code WPILib extension";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib";
     license = licenses.bsd3;
-    platforms = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" "aarch64-linux" "armv7l-linux" ];
+    platforms = [
+      "x86_64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+      "aarch64-linux"
+      "armv7l-linux"
+    ];
   };
 }

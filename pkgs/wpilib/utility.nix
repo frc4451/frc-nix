@@ -1,16 +1,17 @@
-{ stdenv
-, lib
-, allwpilibSources
-, fetchurl
-, autoPatchelfHook
-, makeBinaryWrapper
-, wrapGAppsHook3
-, ffmpeg
-, mesa
-, nss
-, systemd
-, wayland
-, xdg-utils
+{
+  stdenv,
+  lib,
+  allwpilibSources,
+  fetchurl,
+  autoPatchelfHook,
+  makeBinaryWrapper,
+  wrapGAppsHook3,
+  ffmpeg,
+  mesa,
+  nss,
+  systemd,
+  wayland,
+  xdg-utils,
 }:
 stdenv.mkDerivation rec {
   pname = "wpilib-utility";
@@ -21,7 +22,11 @@ stdenv.mkDerivation rec {
     hash = "sha256-mQ9wthjna7p9g4tHzuLc20WdsLrwiQF/0+R4Go+QHDY=";
   };
 
-  nativeBuildInputs = [ autoPatchelfHook makeBinaryWrapper wrapGAppsHook3 ];
+  nativeBuildInputs = [
+    autoPatchelfHook
+    makeBinaryWrapper
+    wrapGAppsHook3
+  ];
 
   buildInputs = [
     ffmpeg
@@ -49,7 +54,7 @@ stdenv.mkDerivation rec {
     makeBinaryWrapper "$out"/opt/wpilib-utility/wpilibutility "$out"/bin/${pname} \
       --add-flags --disable-gpu-sandbox \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath buildInputs}" \
-      --suffix PATH : ${lib.makeBinPath [xdg-utils]} \
+      --suffix PATH : ${lib.makeBinPath [ xdg-utils ]} \
 
     runHook postInstall
   '';
@@ -59,6 +64,10 @@ stdenv.mkDerivation rec {
     description = "WPILib VSCode Utility (Standalone)";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib/tree/main/wpilib-utility-standalone";
     license = licenses.bsd3;
-    platforms = [ "x86_64-linux" "aarch64-linux" "armv7l-linux" ];
+    platforms = [
+      "x86_64-linux"
+      "aarch64-linux"
+      "armv7l-linux"
+    ];
   };
 }
