@@ -3,7 +3,7 @@
 buildJavaTool {
   pname = "shuffleboard";
 
-  name = "Shuffleboard";
+  humanName = "Shuffleboard";
 
   artifactHashes = {
     linuxarm32 = "sha256-ZZV/eaTznuJ+USu3VQFITjIu9c/kbqQd8v5HvRLzB2I=";
