@@ -77,7 +77,7 @@
           }
       );
 
-      formatter = forEachPkgs (pkgs: pkgs.nixpkgs-fmt);
+      formatter = forEachPkgs (pkgs: pkgs.nixfmt-tree);
 
       devShells = forEachPkgs (pkgs: {
         default = pkgs.mkShell {
