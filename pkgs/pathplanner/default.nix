@@ -1,11 +1,12 @@
-{ lib
-, flutter
-, fetchFromGitHub
-, copyDesktopItems
-, stdenv
-, xz
-, libuuid
-, makeDesktopItem
+{
+  lib,
+  flutter,
+  fetchFromGitHub,
+  copyDesktopItems,
+  stdenv,
+  xz,
+  libuuid,
+  makeDesktopItem,
 }:
 flutter.buildFlutterApplication rec {
   pname = "pathplanner";
@@ -22,10 +23,11 @@ flutter.buildFlutterApplication rec {
 
   nativeBuildInputs = [ copyDesktopItems ];
 
-  buildInputs =
-    [ xz ]
-    # provides libblkid on Linux
-    ++ lib.optionals stdenv.isLinux [ libuuid ];
+  buildInputs = [
+    xz
+  ]
+  # provides libblkid on Linux
+  ++ lib.optionals stdenv.isLinux [ libuuid ];
 
   postUnpack = ''
     # Make the version shown in the GUI match the actual version instead of "0.0.0"
@@ -45,7 +47,11 @@ flutter.buildFlutterApplication rec {
       icon = pname;
       comment = meta.description;
       categories = [ "Development" ];
-      keywords = [ "FRC" "Motion Profile" "Path Planning" ];
+      keywords = [
+        "FRC"
+        "Motion Profile"
+        "Path Planning"
+      ];
     })
   ];
 

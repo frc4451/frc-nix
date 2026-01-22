@@ -1,12 +1,13 @@
-{ stdenv
-, lib
-, fetchurl
-, autoPatchelfHook
-, copyDesktopItems
-, unzip
-, wrapGAppsHook3
-, webkitgtk_4_1
-, makeDesktopItem
+{
+  stdenv,
+  lib,
+  fetchurl,
+  autoPatchelfHook,
+  copyDesktopItems,
+  unzip,
+  wrapGAppsHook3,
+  webkitgtk_4_1,
+  makeDesktopItem,
 }:
 let
   pname = "choreo";
@@ -61,7 +62,11 @@ stdenv.mkDerivation {
       icon = pname;
       comment = "A graphical tool for planning time-optimized trajectories for autonomous mobile robots in the FIRST Robotics Competition";
       categories = [ "Development" ];
-      keywords = [ "FRC" "Motion Profile" "Path Planning" ];
+      keywords = [
+        "FRC"
+        "Motion Profile"
+        "Path Planning"
+      ];
     })
   ];
 

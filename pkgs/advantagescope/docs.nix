@@ -1,8 +1,9 @@
-{ buildNpmPackage
-, src
-, pname
-, version
-, ...
+{
+  buildNpmPackage,
+  src,
+  pname,
+  version,
+  ...
 }:
 buildNpmPackage (finalAttrs: {
   pname = pname + "-docs";

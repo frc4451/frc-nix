@@ -1,4 +1,13 @@
-{ lib, stdenv, allwpilibSources, fetchurl, makeWrapper, copyDesktopItems, makeDesktopItem, temurin-jre-bin-17 }:
+{
+  lib,
+  stdenv,
+  allwpilibSources,
+  fetchurl,
+  makeWrapper,
+  copyDesktopItems,
+  makeDesktopItem,
+  temurin-jre-bin-17,
+}:
 
 stdenv.mkDerivation rec {
   pname = "robotbuilder";

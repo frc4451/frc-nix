@@ -1,11 +1,12 @@
-{ stdenv
-, fetchurl
-, autoPatchelfHook
-, wrapGAppsHook3
-, lib
-, unzip
-, makeDesktopItem
-, copyDesktopItems
+{
+  stdenv,
+  fetchurl,
+  autoPatchelfHook,
+  wrapGAppsHook3,
+  lib,
+  unzip,
+  makeDesktopItem,
+  copyDesktopItems,
 }:
 stdenv.mkDerivation rec {
   pname = "elastic-dashboard";
@@ -53,7 +54,10 @@ stdenv.mkDerivation rec {
       icon = pname;
       comment = meta.description;
       categories = [ "Development" ];
-      keywords = [ "FRC" "Dashboard" ];
+      keywords = [
+        "FRC"
+        "Dashboard"
+      ];
     })
   ];
 

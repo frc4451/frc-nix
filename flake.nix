@@ -11,10 +11,10 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nix-github-actions
-    ,
+    {
+      self,
+      nixpkgs,
+      nix-github-actions,
     }:
     let
       inherit (nixpkgs) lib;
@@ -48,9 +48,9 @@
           packages = import ./. { inherit pkgs; };
         in
         lib.attrsets.filterAttrs
-          (_: pkg:
-            builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms
-            && !(pkg.meta.broken or false)
+          (
+            _: pkg:
+            builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms && !(pkg.meta.broken or false)
           )
           {
             inherit (packages)

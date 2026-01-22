@@ -1,12 +1,12 @@
-{ lib
-, writeShellApplication
-, curl
-, jq
-, gnused
-, gawk
-, coreutils
-, nix
-,
+{
+  lib,
+  writeShellApplication,
+  curl,
+  jq,
+  gnused,
+  gawk,
+  coreutils,
+  nix,
 }:
 
 writeShellApplication {

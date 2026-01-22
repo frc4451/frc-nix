@@ -1,16 +1,16 @@
-{ lib
-, buildNpmPackage
-, fetchFromGitHub
-, emscripten
-, electron
-, libGL
-, makeWrapper
-, makeDesktopItem
-, copyDesktopItems
-, callPackage
-, isWPILibVersion ? false
-, stdenv
-,
+{
+  lib,
+  buildNpmPackage,
+  fetchFromGitHub,
+  emscripten,
+  electron,
+  libGL,
+  makeWrapper,
+  makeDesktopItem,
+  copyDesktopItems,
+  callPackage,
+  isWPILibVersion ? false,
+  stdenv,
 }:
 let
   pname = "advantage-scope";
@@ -50,7 +50,8 @@ let
     {
       "x86_64-linux" = "linux-unpacked";
       "aarch64-linux" = "linux-arm64-unpacked";
-    }."${system}" or (throw "Unsupported system: ${system}");
+    }
+    ."${system}" or (throw "Unsupported system: ${system}");
 in
 buildNpmPackage (finalAttrs: {
   inherit
@@ -126,7 +127,10 @@ buildNpmPackage (finalAttrs: {
     homepage = "https://docs.advantagescope.org/";
     license = lib.licenses.bsd3;
     maintainers = with lib.maintainers; [ me-it-is ];
-    platforms = [ "x86_64-linux" "aarch64-linux" ];
+    platforms = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
   };
 
   nativeBuildInputs = [

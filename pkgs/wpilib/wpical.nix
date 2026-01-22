@@ -1,4 +1,8 @@
-{ buildBinTool, allwpilibSources, gfortran }:
+{
+  buildBinTool,
+  allwpilibSources,
+  gfortran,
+}:
 
 buildBinTool {
   pname = "wpical";

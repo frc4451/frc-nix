@@ -1,16 +1,22 @@
-{ buildNpmPackage
-, src
-, pname
-, version
-, nodejs
-, npmDepsHash
-, cacert
-, patches
-, ...
+{
+  buildNpmPackage,
+  src,
+  pname,
+  version,
+  nodejs,
+  npmDepsHash,
+  cacert,
+  patches,
+  ...
 }:
 buildNpmPackage (finalAttrs: {
   pname = pname + "-licenses";
-  inherit version src npmDepsHash patches;
+  inherit
+    version
+    src
+    npmDepsHash
+    patches
+    ;
 
   makeCacheWritable = true;
   npmFlags = [ "--ignore-scripts" ];
