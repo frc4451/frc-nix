@@ -111,12 +111,15 @@ version_less_than() {
 # Extract current version from Nix file
 get_current_version() {
     local file="$1"
+    verbose "Checking version for: '$file'"
     # Try different version patterns
     if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/package.nix" && ! "$file" == *"/vscode-wpilib.nix" ]]; then
         # WPILib packages that inherit version from allwpilibSources
+        verbose "Package inherits version from allwpilibSources"
         grep -o 'version = "[^"]*"' "$wpilib_sources" | sed 's/version = "//; s/"//' || echo ""
     else
         # Regular packages with explicit version
+        verbose "Package has explicit version"
         grep -o 'version = "[^"]*"' "$file" | sed 's/version = "//; s/"//' || echo ""
     fi
 }
@@ -425,12 +428,16 @@ update_github_package() {
     local current_version
     current_version=$(get_current_version "$file")
 
+    verbose "Current version is: $current_version"
+
     if [[ -z "$current_version" ]]; then
         error "Could not find current version in $file"
     fi
 
     local latest_version
     latest_version=$(get_github_latest "$repo")
+
+    verbose "Latest Version is: $latest_version"
 
     if [[ "$current_version" == "$latest_version" ]]; then
         if [[ "$FORCE" == "true" ]]; then
