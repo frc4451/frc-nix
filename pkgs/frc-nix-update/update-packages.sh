@@ -78,8 +78,26 @@ done
 # Get latest GitHub release version
 get_github_latest() {
     local repo="$1"
-    curl -s "https://api.github.com/repos/$repo/releases/latest" | \
-        jq -r '.tag_name' | sed 's/^v//'
+    local request="curl -s --request GET --url \"https://api.github.com/repos/$repo/releases/latest\""
+
+    # Check if GITHUB_TOKEN is available to use for the API request to avoid ratelimiting
+    if [[ -z "$GITHUB_TOKEN" ]]; then
+      verbose "GitHub token NOT present"
+    else
+      verbose "GitHub token present"
+      request="$request --header \"Authorization: Bearer $GITHUB_TOKEN"\"
+    fi
+
+    local result
+    result=$(eval "$request")
+
+    # If tag_name isn't present, then something has gone wrong and we should exit.
+    if ! echo "$result" | jq -r -e '.tag_name' &>/dev/null; then
+      echo ""
+      error "could not find tag_name"
+    fi
+
+    echo "$result" | jq -r '.tag_name' | sed 's/^v//'
 }
 
 # Get latest WPILib version
@@ -438,6 +456,10 @@ update_github_package() {
     latest_version=$(get_github_latest "$repo")
 
     verbose "Latest Version is: $latest_version"
+
+    if [[ "$latest_version" == "" ]]; then
+      error "failed to check latest version. (Are you being ratelimited?)"
+    fi
 
     if [[ "$current_version" == "$latest_version" ]]; then
         if [[ "$FORCE" == "true" ]]; then
