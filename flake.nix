@@ -83,7 +83,6 @@
         default = pkgs.mkShell {
           name = "frc-nix";
           packages = [
-            pkgs.nushell
             self.packages.${pkgs.stdenv.hostPlatform.system}.frc-nix-update
           ];
         };
