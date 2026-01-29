@@ -1,4 +1,0 @@
-builds:
-  include:
-    - "packages.*.*"
-    - "devShell.*"
