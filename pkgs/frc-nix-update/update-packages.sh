@@ -78,8 +78,26 @@ done
 # Get latest GitHub release version
 get_github_latest() {
     local repo="$1"
-    curl -s "https://api.github.com/repos/$repo/releases/latest" | \
-        jq -r '.tag_name' | sed 's/^v//'
+    local request="curl -s --request GET --url \"https://api.github.com/repos/$repo/releases/latest\""
+
+    # Check if GITHUB_TOKEN is available to use for the API request to avoid ratelimiting
+    if [[ -z "$GITHUB_TOKEN" ]]; then
+      verbose "GitHub token NOT present"
+    else
+      verbose "GitHub token present"
+      request="$request --header \"Authorization: Bearer $GITHUB_TOKEN"\"
+    fi
+
+    local result
+    result=$(eval "$request")
+
+    # If tag_name isn't present, then something has gone wrong and we should exit.
+    if ! echo "$result" | jq -r -e '.tag_name' &>/dev/null; then
+      echo ""
+      error "could not find tag_name"
+    fi
+
+    echo "$result" | jq -r '.tag_name' | sed 's/^v//'
 }
 
 # Get latest WPILib version
@@ -111,12 +129,15 @@ version_less_than() {
 # Extract current version from Nix file
 get_current_version() {
     local file="$1"
+    verbose "Checking version for: '$file'"
     # Try different version patterns
-    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/default.nix" && ! "$file" == *"/vscode-extension.nix" ]]; then
+    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/package.nix" && ! "$file" == *"/vscode-wpilib.nix" ]]; then
         # WPILib packages that inherit version from allwpilibSources
-        grep -o 'version = "[^"]*"' "$REPO_ROOT/pkgs/wpilib/default.nix" | sed 's/version = "//; s/"//' || echo ""
+        verbose "Package inherits version from allwpilibSources"
+        grep -o 'version = "[^"]*"' "$wpilib_sources" | sed 's/version = "//; s/"//' || echo ""
     else
         # Regular packages with explicit version
+        verbose "Package has explicit version"
         grep -o 'version = "[^"]*"' "$file" | sed 's/version = "//; s/"//' || echo ""
     fi
 }
@@ -155,10 +176,10 @@ hex_to_sri() {
     nix-hash --type sha256 --to-sri "$hex" | tr -d '\n'
 }
 
-# Update allwpilibSources hash in WPILib default.nix
+# Update allwpilibSources hash in WPILib allwpilibSources.nix
 update_allwpilib_sources_hash() {
     local version="$1"
-    local file="$REPO_ROOT/pkgs/wpilib/default.nix"
+    local file="$wpilib_sources"
     
     if [[ "$DRY_RUN" == "true" ]]; then
         return 0
@@ -180,7 +201,7 @@ update_allwpilib_sources_hash() {
     
     verbose "Got hash: $hash"
     
-    # Update the hash in default.nix
+    # Update the hash in allwpilibSources.nix
     sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"$hash\"|" "$file"
 }
 
@@ -425,12 +446,20 @@ update_github_package() {
     local current_version
     current_version=$(get_current_version "$file")
 
+    verbose "Current version is: $current_version"
+
     if [[ -z "$current_version" ]]; then
         error "Could not find current version in $file"
     fi
 
     local latest_version
     latest_version=$(get_github_latest "$repo")
+
+    verbose "Latest Version is: $latest_version"
+
+    if [[ "$latest_version" == "" ]]; then
+      error "failed to check latest version. (Are you being ratelimited?)"
+    fi
 
     if [[ "$current_version" == "$latest_version" ]]; then
         if [[ "$FORCE" == "true" ]]; then
@@ -471,7 +500,7 @@ update_wpilib_package() {
     # If version wasn't checked centrally, check it now
     if [[ "$version_already_checked" != "true" ]]; then
         local current_version
-        current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
+        current_version=$(get_current_version "$wpilib_sources")
         current_version=$(echo "$current_version" | head -1 | tr -d '[:space:]')
 
         if [[ -z "$current_version" ]]; then
@@ -490,9 +519,9 @@ update_wpilib_package() {
         new_version="$latest_version"
         echo "  $name: $current_version -> $latest_version"
 
-        # Update WPILib default.nix version
-        update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$new_version"
-        format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+        # Update WPILib allwpilibSources.nix version
+        update_version "$wpilib_sources" "$new_version"
+        format_nix_file "$wpilib_sources"
     else
         echo "  Updating $name hashes for version $new_version"
     fi
@@ -518,11 +547,11 @@ update_all_packages() {
 
     # GitHub packages
     declare -A github_packages=(
-        ["advantagescope"]="Mechanical-Advantage/AdvantageScope:pkgs/advantagescope/default.nix:AdvantageScope"
-        ["choreo"]="SleipnirGroup/Choreo:pkgs/choreo/default.nix:Choreo"
-        ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/default.nix:Elastic"
-        ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/default.nix:PathPlanner"
-        ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-extension.nix:vscode-wpilib"
+        ["advantagescope"]="Mechanical-Advantage/AdvantageScope:pkgs/advantagescope/package.nix:AdvantageScope"
+        ["choreo"]="SleipnirGroup/Choreo:pkgs/choreo/package.nix:Choreo"
+        ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/package.nix:Elastic"
+        ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/package.nix:PathPlanner"
+        ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-wpilib.nix:vscode-wpilib"
     )
 
     for package in "${!github_packages[@]}"; do
@@ -552,6 +581,7 @@ update_all_packages() {
     local wpilib_needs_update=false
     local wpilib_current_version=""
     local wpilib_latest_version=""
+    local wpilib_sources="$REPO_ROOT/pkgs/wpilib/allwpilibSources.nix"
     
     # Determine if any WPILib packages need to be checked
     local check_wpilib=false
@@ -568,7 +598,8 @@ update_all_packages() {
 
     if [[ "$check_wpilib" == "true" ]]; then
         log "Checking WPILib version..."
-        wpilib_current_version=$(get_current_version "$REPO_ROOT/pkgs/wpilib/default.nix")
+
+        wpilib_current_version=$(get_current_version "$wpilib_sources")
         wpilib_current_version=$(echo "$wpilib_current_version" | head -1 | tr -d '[:space:]')
         
         if [[ -z "$wpilib_current_version" ]]; then
@@ -585,15 +616,15 @@ update_all_packages() {
             wpilib_needs_update=true
             log "WPILib update detected: $wpilib_current_version -> $wpilib_latest_version"
             
-            # Update default.nix version once
-            echo "  Updating WPILib version in default.nix"
-            update_version "$REPO_ROOT/pkgs/wpilib/default.nix" "$wpilib_latest_version"
+            # Update allwpilibSources.nix version once
+            echo "  Updating WPILib version in $(basename "$wpilib_sources")"
+            update_version "$wpilib_sources" "$wpilib_latest_version"
             
             # Update allwpilibSources hash
             echo "  Updating allwpilibSources hash"
             update_allwpilib_sources_hash "$wpilib_latest_version"
             
-            format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+            format_nix_file "$wpilib_sources"
         elif [[ "$FORCE" == "true" ]]; then
             wpilib_needs_update=true
             wpilib_latest_version="$wpilib_current_version"
@@ -603,7 +634,7 @@ update_all_packages() {
             echo "  Updating allwpilibSources hash"
             update_allwpilib_sources_hash "$wpilib_latest_version"
             
-            format_nix_file "$REPO_ROOT/pkgs/wpilib/default.nix"
+            format_nix_file "$wpilib_sources"
         else
             log "WPILib is up to date ($wpilib_current_version)"
         fi

@@ -35,46 +35,17 @@
         checks = lib.getAttrs [ "x86_64-linux" ] self.packages;
       };
 
-      overlays.default =
-        final: prev:
-        import ./. {
-          pkgs = final;
-          inherit prev;
-        };
+      overlays.default = import ./overlay.nix;
 
+      legacyPackages = forEachPkgs (pkgs: import ./default.nix { inherit pkgs; });
       packages = forEachPkgs (
         pkgs:
-        let
-          packages = import ./. { inherit pkgs; };
-        in
-        lib.attrsets.filterAttrs
-          (
-            _: pkg:
-            builtins.elem pkgs.stdenv.hostPlatform.system pkg.meta.platforms && !(pkg.meta.broken or false)
-          )
-          {
-            inherit (packages)
-              advantagescope
-              choreo
-              elastic-dashboard
-              pathplanner
-              frc-nix-update
-              ;
-            inherit (packages.wpilib)
-              datalogtool
-              glass
-              outlineviewer
-              pathweaver
-              roborioteamnumbersetter
-              robotbuilder
-              shuffleboard
-              smartdashboard
-              sysid
-              wpical
-              vscode-wpilib
-              wpilib-utility
-              ;
-          }
+        pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) (
+          let
+            packages = self.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+          in
+          packages // packages.wpilib
+        )
       );
 
       formatter = forEachPkgs (pkgs: pkgs.nixfmt-tree);
