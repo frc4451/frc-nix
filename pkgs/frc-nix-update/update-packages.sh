@@ -81,11 +81,11 @@ get_github_latest() {
     local request="curl -s --request GET --url \"https://api.github.com/repos/$repo/releases/latest\""
 
     # Check if GITHUB_TOKEN is available to use for the API request to avoid ratelimiting
-    if [[ -z "$GITHUB_TOKEN" ]]; then
+    if [[ -z "${GITHUB_TOKEN:-}" ]]; then
       verbose "GitHub token NOT present"
     else
       verbose "GitHub token present"
-      request="$request --header \"Authorization: Bearer $GITHUB_TOKEN"\"
+      request="$request --header \"Authorization: Bearer $GITHUB_TOKEN\""
     fi
 
     local result

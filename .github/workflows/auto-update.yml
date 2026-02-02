@@ -27,6 +27,8 @@ jobs:
 
       - name: Check for package updates
         id: check-updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Checking for package updates..."
 
@@ -120,6 +122,8 @@ jobs:
 
       - name: Apply package updates
         if: steps.check-updates.outputs.has_updates == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Applying package updates..."
 
