@@ -19,7 +19,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz";
-    hash = "sha256-mQ9wthjna7p9g4tHzuLc20WdsLrwiQF/0+R4Go+QHDY=";
+    hash = "sha256-EmlC8zMu37A56pqTLBhqjNCtWMRmpm0c2uQTUkCbM4w=";
   };
 
   nativeBuildInputs = [
