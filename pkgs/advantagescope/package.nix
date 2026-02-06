@@ -11,6 +11,7 @@
   callPackage,
   isWPILibVersion ? false,
   stdenv,
+  yt-dlp,
 }:
 let
   pname = "advantage-scope";
@@ -101,6 +102,7 @@ buildNpmPackage (finalAttrs: {
         libGL
       ]
     } \
+    --prefix PATH : ${lib.makeBinPath [ yt-dlp ]} \
     --append-flags "--no-sandbox"
   '';
 
@@ -139,5 +141,5 @@ buildNpmPackage (finalAttrs: {
     copyDesktopItems
   ];
 
-  buildInputs = [ makeWrapper ];
+  buildInputs = [ yt-dlp ];
 })
