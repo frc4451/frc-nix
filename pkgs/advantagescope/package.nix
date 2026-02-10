@@ -11,6 +11,7 @@
   callPackage,
   isWPILibVersion ? false,
   stdenv,
+  yt-dlp,
 }:
 let
   pname = "advantagescope";
@@ -97,11 +98,8 @@ buildNpmPackage (finalAttrs: {
 
   postFixup = ''
     wrapProgram $out/bin/advantagescope \
-    --set LD_LIBRARY_PATH ${
-      lib.makeLibraryPath [
-        libGL
-      ]
-    } \
+    --prefix PATH : ${lib.makeBinPath [ yt-dlp ]} \
+    --set LD_LIBRARY_PATH ${lib.makeLibraryPath [ libGL ]} \
     --append-flags "--no-sandbox"
   '';
 
