@@ -1,0 +1,41 @@
+From 2267b26c4d40dd58745820988b8198b95bb5d575 Mon Sep 17 00:00:00 2001
+From: blaze-developer <bryceblazegaming@gmail.com>
+Date: Wed, 28 Jan 2026 11:09:49 -0800
+Subject: [PATCH] Fall back onto path when bundled yt-dlp doesnt exist.
+
+---
+ src/main/electron/VideoProcessor.ts | 13 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/electron/VideoProcessor.ts b/src/main/electron/VideoProcessor.ts
+index d3209a2b4..8b58622e5 100644
+--- a/src/main/electron/VideoProcessor.ts
++++ b/src/main/electron/VideoProcessor.ts
+@@ -132,7 +132,7 @@ export class VideoProcessor {
+ 
+     // Initialize youtube-dl-exec
+     if (app.isPackaged) {
+-      const fullBinaryPath = path.join(
++      let fullBinaryPath = path.join(
+         __dirname,
+         "..",
+         "..",
+@@ -142,8 +142,17 @@ export class VideoProcessor {
+         "bin",
+         process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
+       );
++
++      if (!fs.existsSync(fullBinaryPath)) {
++        fullBinaryPath = "yt-dlp"
++      }
++
+       const binaryDir = path.dirname(fullBinaryPath);
+-      const binaryName = `.${path.sep}${path.basename(fullBinaryPath)}`;
++      const binaryName =
++        fullBinaryPath === "yt-dlp"
++          ? fullBinaryPath
++          : `.${path.sep}${path.basename(fullBinaryPath)}`;
++      
+       const rawYt = youtubedl.create(binaryName);
+       this.ytInst = (url, flags, options) => {
+         return rawYt(url, flags, { cwd: binaryDir, ...options });
