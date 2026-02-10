@@ -92,14 +92,16 @@ buildNpmPackage (finalAttrs: {
     runHook preInstall
 
     mkdir -p $out/bin
-    cp -r ./dist/${finalOutDir}/. $out/bin/
+    mkdir -p $out/share/${pname}
+    cp -r ./dist/${finalOutDir}/. $out/share/${pname}
+
     install -Dm444 "${src}"/icons/app/app-icons-linux/icon_512x512.png "$out"/share/pixmaps/${pname}.png
 
     runHook postInstall
   '';
 
   postFixup = ''
-    wrapProgram $out/bin/advantagescope \
+    makeWrapper $out/share/${pname}/advantagescope $out/bin/advantagescope \
     --prefix PATH : ${lib.makeBinPath [ yt-dlp ]} \
     --set LD_LIBRARY_PATH ${lib.makeLibraryPath [ libGL ]} \
     --append-flags "--no-sandbox"
