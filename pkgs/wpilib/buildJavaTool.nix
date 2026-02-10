@@ -6,7 +6,8 @@
   makeWrapper,
   temurin-jre-bin-17,
   libGL,
-  xorg,
+  libx11,
+  libxtst,
   gtk2,
   copyDesktopItems,
   makeDesktopItem,
@@ -72,8 +73,8 @@ lib.extendMkDerivation {
         [
           stdenv.cc.cc
           libGL
-          xorg.libX11
-          xorg.libXtst
+          libx11
+          libxtst
           gtk2
         ]
         ++ extraLibs
