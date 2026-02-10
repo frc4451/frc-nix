@@ -13,7 +13,7 @@
   stdenv,
 }:
 let
-  pname = "advantage-scope";
+  pname = "advantagescope";
   version = "26.0.0";
 
   src = fetchFromGitHub {
