@@ -131,7 +131,7 @@ get_current_version() {
     local file="$1"
     verbose "Checking version for: '$file'"
     # Try different version patterns
-    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/package.nix" && ! "$file" == *"/vscode-wpilib.nix" ]]; then
+    if [[ "$file" == *"/wpilib/"* && ! "$file" == *"/package.nix" && ! "$file" == *"/vscode-wpilib.nix" && ! "$file" == *"/wpilib-utility.nix" ]]; then
         # WPILib packages that inherit version from allwpilibSources
         verbose "Package inherits version from allwpilibSources"
         grep -o 'version = "[^"]*"' "$wpilib_sources" | sed 's/version = "//; s/"//' || echo ""
@@ -257,6 +257,12 @@ fetch_github_hashes() {
             
             # Convert to SRI format
             hash=$(nix hash convert --hash-algo sha256 --to sri "$hash" | tr -d '\n')
+            echo "hash = \"$hash\";"
+            ;;
+        "wpilib-utility")
+            local url="https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${version}/wpilibutility-linux.tar.gz"
+            local hash
+            hash=$(fetch_url_hash "$url")
             echo "hash = \"$hash\";"
             ;;
     esac
@@ -552,6 +558,7 @@ update_all_packages() {
         ["elastic-dashboard"]="Gold872/elastic_dashboard:pkgs/elastic-dashboard/package.nix:Elastic"
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/package.nix:PathPlanner"
         ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-wpilib.nix:vscode-wpilib"
+        ["wpilib-utility"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/wpilib-utility.nix:wpilib-utility"
     )
 
     for package in "${!github_packages[@]}"; do
