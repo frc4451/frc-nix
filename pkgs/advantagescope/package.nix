@@ -12,6 +12,30 @@
   isWPILibVersion ? false,
   stdenv,
   yt-dlp,
+  autoPatchelfHook,
+  at-spi2-atk,
+  cups,
+  cairo,
+  gtk3,
+  pango,
+  libjpeg,
+  libXcomposite,
+  libXdamage,
+  libXfixes,
+  libXrandr,
+  libgbm,
+  expat,
+  libpng,
+  libxml2,
+  libxkbcommon,
+  libffi,
+  systemdLibs,
+  alsa-lib,
+  pulseaudio,
+  flac,
+  libxslt,
+  nspr,
+  nss,
 }:
 let
   pname = "advantagescope";
@@ -140,5 +164,34 @@ buildNpmPackage (finalAttrs: {
     emscripten
     makeWrapper
     copyDesktopItems
+    autoPatchelfHook
+  ];
+
+  buildInputs = [
+    yt-dlp
+
+    at-spi2-atk
+    cups.lib
+    cairo
+    gtk3
+    pango
+    libjpeg
+    libXcomposite
+    libXdamage
+    libXfixes
+    libXrandr
+    libgbm
+    expat
+    libpng
+    libxml2
+    libxkbcommon
+    libffi
+    systemdLibs
+    alsa-lib
+    pulseaudio
+    flac
+    libxslt
+    nspr
+    nss
   ];
 })
