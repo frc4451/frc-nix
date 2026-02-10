@@ -9,7 +9,7 @@
   makeDesktopItem,
   makeWrapper,
   libGL,
-  xorg,
+  libx11,
   zenity,
 }:
 lib.extendMkDerivation {
@@ -69,7 +69,7 @@ lib.extendMkDerivation {
       libraries = [
         stdenv.cc.cc
         libGL
-        xorg.libX11
+        libx11
       ]
       ++ extraLibs;
 
