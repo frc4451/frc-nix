@@ -92,6 +92,10 @@ buildNpmPackage (finalAttrs: {
     cp -r ./dist/${finalOutDir}/. $out/bin/
     install -Dm444 "${src}"/icons/app/app-icons-linux/icon_512x512.png "$out"/share/pixmaps/${pname}.png
 
+    # Copy yt-dlp binary to where AdvantageScope expects it (./yt-dlp)
+    cp ${yt-dlp}/bin/yt-dlp $out/bin/yt-dlp
+    chmod +x $out/bin/yt-dlp
+
     runHook postInstall
   '';
 
@@ -102,7 +106,6 @@ buildNpmPackage (finalAttrs: {
         libGL
       ]
     } \
-    --prefix PATH : ${lib.makeBinPath [ yt-dlp ]} \
     --append-flags "--no-sandbox"
   '';
 
