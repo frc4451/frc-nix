@@ -70,25 +70,27 @@ buildNpmPackage (finalAttrs: {
     "--ignore-scripts"
   ];
 
-  preBuild = ''
-    cd $TMPDIR
-    export EMSCRIPTENCACHE=$(mkdir emscriptencache)
-    cd $./source
-  '';
-
   buildPhase = ''
+    runHook preBuild
+
     export ASCOPE_DISTRIBUTION=${lib.optionalString isWPILibVersion "WPILIB"}
     cp ${licenses}/licenses.json ./src/
+
     npm run compile
     npm run wasm:compile
+
     cp -r ${docs} ./docs/build/
     cp ${tesseract}/eng.traineddata.gz ./
     cp -r ${electron.dist} electron-dist
     chmod -R u+w electron-dist
     npx electron-builder build -l -c.electronDist=electron-dist -c.electronVersion=${electron.version}
+
+    runHook postBuild
   '';
 
   installPhase = ''
+    runHook preInstall
+
     mkdir -p $out/bin
     cp -r ./dist/${finalOutDir}/. $out/bin/
     install -Dm444 "${src}"/icons/app/app-icons-linux/icon_512x512.png "$out"/share/pixmaps/${pname}.png
@@ -137,6 +139,4 @@ buildNpmPackage (finalAttrs: {
     makeWrapper
     copyDesktopItems
   ];
-
-  buildInputs = [ makeWrapper ];
 })
