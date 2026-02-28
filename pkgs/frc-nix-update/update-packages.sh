@@ -230,13 +230,44 @@ fetch_github_hashes() {
             echo "hash = \"$hash\";"
             ;;
         "AdvantageScope")
-            local url_x64="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-x64-v${version}.AppImage"
-            local url_arm64="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v${version}/advantagescope-linux-arm64-v${version}.AppImage"
-            local hash_x64 hash_arm64
-            hash_x64=$(fetch_url_hash "$url_x64")
-            hash_arm64=$(fetch_url_hash "$url_arm64")
-            echo "x86_64-linux = \"$hash_x64\";"
-            echo "aarch64-linux = \"$hash_arm64\";"
+            local hash
+            # Fetch the GitHub tarball and compute its hash (built from source via fetchFromGitHub)
+            local url="https://github.com/Mechanical-Advantage/AdvantageScope/archive/refs/tags/v${version}.tar.gz"
+            hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | tail -1)
+
+            if [[ -z "$hash" ]]; then
+                echo "Error: Failed to fetch hash for AdvantageScope v${version}" >&2
+                return 1
+            fi
+
+            # Convert to SRI format
+            hash=$(nix hash convert --hash-algo sha256 --to sri "$hash" | tr -d '\n')
+            echo "hash = \"$hash\";"
+
+            # Compute npmDepsHash and docs npmDepsHash.
+            # Patches modify package-lock.json, so we must apply them first.
+            local tmpdir
+            tmpdir=$(mktemp -d)
+            curl -sL "$url" | tar xz -C "$tmpdir" --strip-components=1
+            local patch_dir="$REPO_ROOT/pkgs/advantagescope"
+            for p in "$patch_dir"/*.patch; do
+                [[ -f "$p" ]] && patch -d "$tmpdir" -p1 < "$p" >/dev/null 2>&1 || true
+            done
+            if [[ -f "$tmpdir/package-lock.json" ]]; then
+                local npm_hash
+                npm_hash=$(prefetch-npm-deps "$tmpdir/package-lock.json" 2>/dev/null)
+                if [[ -n "$npm_hash" ]]; then
+                    echo "npmDepsHash = \"$npm_hash\";"
+                fi
+            fi
+            if [[ -f "$tmpdir/docs/package-lock.json" ]]; then
+                local docs_npm_hash
+                docs_npm_hash=$(prefetch-npm-deps "$tmpdir/docs/package-lock.json" 2>/dev/null)
+                if [[ -n "$docs_npm_hash" ]]; then
+                    echo "docsNpmDepsHash = \"$docs_npm_hash\";"
+                fi
+            fi
+            rm -rf "$tmpdir"
             ;;
         "Elastic")
             local url="https://github.com/Gold872/elastic_dashboard/releases/download/v${version}/Elastic-Linux.zip"
@@ -370,13 +401,18 @@ update_hashes() {
         if [[ $(echo "$hash_output" | wc -l) -gt 1 ]]; then
             # Multiple hashes - check if this is AdvantageScope or artifactHashes format
             if [[ "$tool" == "AdvantageScope" ]]; then
-                # AdvantageScope uses individual hash lines within src block
+                # AdvantageScope: update fetchFromGitHub hash, npmDepsHash, and docs npmDepsHash
+                local docs_file
+                docs_file="$(dirname "$file")/docs.nix"
                 while IFS= read -r hash_line; do
-                    if [[ "$hash_line" =~ ^([^=]+)\ =\ \"([^\"]+)\"\;$ ]]; then
-                        local platform="${BASH_REMATCH[1]}"
-                        local hash_value="${BASH_REMATCH[2]}"
-                        # Replace hash within the specific platform's fetchurl block
-                        sed -i "/$platform = fetchurl {/,/};/{s|hash = \"[^\"]*\"|hash = \"$hash_value\"|}" "$file"
+                    if [[ "$hash_line" =~ ^hash\ =\ \"([^\"]+)\"\;$ ]]; then
+                        sed -i "s|hash = \"[^\"]*\"|hash = \"${BASH_REMATCH[1]}\"|" "$file"
+                    elif [[ "$hash_line" =~ ^npmDepsHash\ =\ \"([^\"]+)\"\;$ ]]; then
+                        sed -i "s|npmDepsHash = \"[^\"]*\"|npmDepsHash = \"${BASH_REMATCH[1]}\"|" "$file"
+                    elif [[ "$hash_line" =~ ^docsNpmDepsHash\ =\ \"([^\"]+)\"\;$ ]]; then
+                        if [[ -f "$docs_file" ]]; then
+                            sed -i "s|npmDepsHash = \"[^\"]*\"|npmDepsHash = \"${BASH_REMATCH[1]}\"|" "$docs_file"
+                        fi
                     fi
                 done <<< "$hash_output"
             else
@@ -686,7 +722,7 @@ update_all_packages() {
 check_deps() {
     local missing=()
 
-    for cmd in curl jq sed awk nix; do
+    for cmd in curl jq sed awk nix prefetch-npm-deps; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing+=("$cmd")
         fi
