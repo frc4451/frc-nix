@@ -7,6 +7,7 @@
   gawk,
   coreutils,
   nix,
+  prefetch-npm-deps,
 }:
 
 writeShellApplication {
@@ -19,6 +20,7 @@ writeShellApplication {
     gawk
     coreutils
     nix
+    prefetch-npm-deps
   ];
 
   text = builtins.readFile ./update-packages.sh;
