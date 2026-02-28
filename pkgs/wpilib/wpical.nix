@@ -10,10 +10,10 @@ buildBinTool {
   humanName = "wpical";
 
   artifactHashes = {
-    linuxarm32 = "sha256-aBnQBQ25ofuVJXwjz8SnFjPmEIUL+1WK1w+i1GIltLM=";
-    linuxarm64 = "sha256-VeaSrH9CqIImkCbxklPFiYm5RlIzo+ImDcixtrk8GaY=";
-    linuxx86-64 = "sha256-PbnxDUMLbSM0j+1WyDHSEGY62GXwyTl7NVygwlWyCFI=";
-    osxuniversal = "sha256-+c/QRI8pnsp566kIzSuHyUmb0ERV59EHHQZch4tu7xw=";
+    linuxarm32 = "sha256-uJZ1SYXIL7vMJpbFq3EKYLF0h2Z6WlqXAYWQCHbiAuQ=";
+    linuxarm64 = "sha256-DMnmRb15U/OA+/9PCMigYPQxtvhOX2evDId0PRZtWwU=";
+    linuxx86-64 = "sha256-SZUMfWHRiad8IopJPe/+NV1eyw6EUwD4Z0T9n9LgKTM=";
+    osxuniversal = "sha256-yPiOvBfj/UuLBE/gVStRfUiIEjpsGH5UYVAvbg39miE=";
   };
 
   extraLibs = [ gfortran.cc ];

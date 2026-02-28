@@ -39,13 +39,13 @@
 }:
 let
   pname = "advantagescope";
-  version = "26.0.0";
+  version = "26.0.1";
 
   src = fetchFromGitHub {
     owner = "Mechanical-Advantage";
     repo = "AdvantageScope";
     tag = "v${version}";
-    hash = "sha256-ZkA7u/QlM5+w4l6ZrlRAxhtPelyLi4LqSjGs27IFGKU=";
+    hash = "sha256-KL3SAr8SxY6e4EKP6dnEUHiZmvY3l/OD2pQIwrfzDSI=";
   };
 
   patches = [
@@ -68,7 +68,7 @@ let
   docs = callPackage ./docs.nix fetchersAtters;
   licenses = callPackage ./licenses.nix fetchersAtters;
   tesseract = callPackage ./tesseract-lang.nix fetchersAtters;
-  npmDepsHash = "sha256-SfgTiK4Bs5u1rxzytMeMue8xqn34fagYt2qzrhEkWfs=";
+  npmDepsHash = "sha256-ccBDQm002bKCmMf6WCrFU+24UQM/FkNhkHtcI0BmRwk=";
 
   system = stdenv.hostPlatform.system;
 
