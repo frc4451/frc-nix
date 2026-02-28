@@ -6,10 +6,10 @@ buildBinTool {
   humanName = "SysId";
 
   artifactHashes = {
-    linuxarm32 = "sha256-uu3woo6Y7xKKDXYvEYUMEpoSjEfDlsVltY/GPfAL6uM=";
-    linuxarm64 = "sha256-9m4aNkrivImHdypPVrKkLIi0uo8jWrolbGSHL4NQQqo=";
-    linuxx86-64 = "sha256-g1g8iGUaCJdEp1MOd6kR0DDwE18S8hlcbOy1aFESUR8=";
-    osxuniversal = "sha256-T+gkiPHTF1DTIRAPLVLh/55/mavEyu+xQ3Y6zIBMxKU=";
+    linuxarm32 = "sha256-UKYAdrXLoUyUy0mWKMy/9Bh5k/SiCVQTWASpfZqO+/A=";
+    linuxarm64 = "sha256-jhrH+pkB9baFXNo7IxDevqbb0HCw2piElFZT9k1fVKE=";
+    linuxx86-64 = "sha256-B0tK+h4nZF/rjMCyhne1r5akznAmhQ/K5EHNqGsIk6M=";
+    osxuniversal = "sha256-8IVaCeERB/FkpqQSZxUc+ReqMV75fufIyPJ+G2tJ9C4=";
   };
 
   iconPng = "${allwpilibSources}/sysid/src/main/native/resources/sysid-512.png";

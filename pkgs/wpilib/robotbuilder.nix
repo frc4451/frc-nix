@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://frcmaven.wpi.edu/artifactory/${allwpilibSources.branch}/edu/wpi/first/tools/RobotBuilder/${version}/RobotBuilder-${version}.jar";
-    hash = "sha256-+UWUp2zPJIvjFFMfHkaWX9a8gkzs4JvmD1VhVZoKYD8=";
+    hash = "sha256-ITb7CVAI3LiJJru0qZBmbr2/U7ZhDNXwddl7/P9klAc=";
   };
 
   dontUnpack = true;
