@@ -10,11 +10,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "elastic-dashboard";
-  version = "2026.1.1";
+  version = "2026.1.2";
 
   src = fetchurl {
     url = "https://github.com/Gold872/elastic_dashboard/releases/download/v${version}/Elastic-Linux.zip";
-    hash = "sha256-X+tUymyIo8OTGqUBBHZLa0OKLiCIRYaqz/E6tNwWEMg=";
+    hash = "sha256-YQO3D+F4jO5JKZFvj4uZh+/jz0aarxIvR87PuD9iZ8E=";
   };
 
   nativeBuildInputs = [
