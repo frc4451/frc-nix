@@ -8,7 +8,6 @@
   at-spi2-atk,
   at-spi2-core,
   atk,
-  autoPatchelfHook,
   cairo,
   cups,
   dbus,
@@ -27,8 +26,10 @@
   libxdamage,
   libxext,
   libxfixes,
+  libxi,
   libxkbcommon,
   libxrandr,
+  libxrender,
   libxshmfence,
   libxtst,
   libxxf86vm,
@@ -37,7 +38,6 @@
   pango,
   systemdLibs,
   udev,
-  wrapGAppsHook3,
 }:
 let
   pname = "rev-hardware-client-2";
@@ -50,53 +50,6 @@ let
       url = "https://rhc2.revrobotics.com/download/rev-hardware-client-1.0.7-linux-amd64.tar.gz";
       hash = "sha256-dIn32bBVarRVoHSG0cZiIt5W33Q5YuQToaZvN/Q8p7s=";
     };
-
-    nativeBuildInputs = [
-      autoPatchelfHook
-      wrapGAppsHook3
-    ];
-
-    buildInputs = [
-      alsa-lib
-      at-spi2-atk
-      at-spi2-core
-      atk
-      cairo
-      cairo
-      cups
-      cups.lib
-      dbus
-      expat
-      glib
-      gtk3
-      libdrm
-      libgbm
-      libgcc
-      libx11
-      libxcb
-      libxcomposite
-      libxcursor
-      libxdamage
-      libxext
-      libxfixes
-      libxkbcommon
-      libxrandr
-      libxshmfence
-      libxtst
-      libxxf86vm
-      nspr
-      nss
-      pango
-      systemdLibs
-      udev
-    ];
-
-    runtimeDependencies = [
-      fontconfig
-      libGL
-      udev
-      stdenv.cc.cc
-    ];
 
     dontBuild = true;
 
@@ -117,8 +70,41 @@ buildFHSEnv {
   targetPkgs = _: [
     rhc2-unwrapped
 
+    alsa-lib
+    at-spi2-atk
+    at-spi2-core
+    atk
+    cairo
+    cups
+    # cups.lib
+    dbus
+    expat
     fontconfig
+    glib
+    gtk3
     libGL
+    libdrm
+    libgbm
+    libgcc
+    libx11
+    libxcb
+    libxcomposite
+    libxcursor
+    libxdamage
+    libxext
+    libxfixes
+    libxi
+    libxkbcommon
+    libxrandr
+    libxrender
+    libxshmfence
+    libxtst
+    libxxf86vm
+    nspr
+    nss
+    pango
+    stdenv.cc.cc
+    systemdLibs
     udev
   ];
 
