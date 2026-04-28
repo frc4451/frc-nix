@@ -2,7 +2,9 @@
   lib,
   stdenv,
   autoPatchelfHook,
+  copyDesktopItems,
   fetchurl,
+  makeDesktopItem,
   udevCheckHook,
   makeBinaryWrapper,
 
@@ -59,6 +61,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     autoPatchelfHook
+    copyDesktopItems
     udevCheckHook
   ];
 
@@ -116,6 +119,7 @@ stdenv.mkDerivation (finalAttrs: {
 
       install -Dm644 ./License.txt $out/share/doc/FirstDriverStation/License.txt
       install -Dm644 ${./72-hidraw.rules} $out/etc/udev/rules.d/72-hidraw.rules
+      install -Dm644 ${../wpilib_logo.svg} $out/share/icons/hicolor/scalable/apps/FirstDriverStation.svg
 
       makeBinaryWrapper ${installPath}/FirstDriverStation $out/bin/FirstDriverStation \
         --prefix PATH : ${lib.makeBinPath [ dhcpcd ]}
@@ -123,6 +127,24 @@ stdenv.mkDerivation (finalAttrs: {
       runHook postInstall
     '';
 
+  desktopItems = [
+    (makeDesktopItem rec {
+      name = "FirstDriverStation";
+      desktopName = name;
+      exec = name;
+      comment = finalAttrs.meta.description or null;
+      icon = name;
+      categories = [
+        "Robotics"
+        "Development"
+      ];
+      keywords = [
+        "FRC"
+        "FTC"
+        "DriverStation"
+      ];
+    })
+  ];
   meta = {
     description = "Enables users to control their FTC and FRC robots.";
     homepage = "https://github.com/wpilibsuite/FirstDriverStation-Public/";
