@@ -10,6 +10,7 @@
   angle,
   avahi,
   fontconfig,
+  gtk3,
   icu,
   libGL,
   libgcc,
@@ -28,6 +29,7 @@
   pipewire,
   sndio,
   udev,
+  webkitgtk_4_1,
 }:
 let
   pname = "firstdriverstation";
@@ -60,6 +62,8 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
+    makeWrapper
+
     alsa-lib
     angle
     avahi
@@ -80,8 +84,6 @@ stdenv.mkDerivation (finalAttrs: {
     pipewire.jack
     sndio
     udev
-
-    makeWrapper
   ];
 
   autoPatchelfIgnoreMissingDeps = [
@@ -90,9 +92,11 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   runtimeDependencies = [
+    gtk3
     icu
     libice
     libsm
+    webkitgtk_4_1
   ];
 
   dontBuild = true;
