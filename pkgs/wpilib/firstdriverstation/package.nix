@@ -3,17 +3,20 @@
   stdenv,
   autoPatchelfHook,
   fetchurl,
-
+  udevCheckHook,
   makeWrapper,
 
   alsa-lib,
   angle,
   avahi,
   fontconfig,
+  icu,
   libGL,
   libgcc,
+  libice,
   libinput,
   libpulseaudio,
+  libsm,
   libusb1,
   libx11,
   libxcb,
@@ -25,10 +28,6 @@
   pipewire,
   sndio,
   udev,
-
-  icu,
-  libice,
-  libsm,
 }:
 let
   pname = "firstdriverstation";
@@ -57,6 +56,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     autoPatchelfHook
+    udevCheckHook
   ];
 
   buildInputs = [
@@ -105,6 +105,7 @@ stdenv.mkDerivation (finalAttrs: {
     install -Dm744 ./libSkiaSharp.so $out/lib/libSkiaSharp.so
 
     install -Dm644 ./License.txt $out/share/doc/FirstDriverStation/License.txt
+    install -Dm644 ${./72-hidraw.rules} $out/etc/udev/rules.d/72-hidraw.rules
 
     makeWrapper $out/lib/FirstDriverStation $out/bin/FirstDriverStation
 
