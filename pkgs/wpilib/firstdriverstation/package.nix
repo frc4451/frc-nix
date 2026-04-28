@@ -30,6 +30,7 @@
   sndio,
   udev,
   webkitgtk_4_1,
+  dhcpcd,
 }:
 let
   pname = "firstdriverstation";
@@ -111,7 +112,8 @@ stdenv.mkDerivation (finalAttrs: {
     install -Dm644 ./License.txt $out/share/doc/FirstDriverStation/License.txt
     install -Dm644 ${./72-hidraw.rules} $out/etc/udev/rules.d/72-hidraw.rules
 
-    makeWrapper $out/lib/FirstDriverStation $out/bin/FirstDriverStation
+    makeWrapper $out/lib/FirstDriverStation $out/bin/FirstDriverStation \
+      --prefix PATH : ${lib.makeBinPath [ dhcpcd ]}
 
     runHook postInstall
   '';
