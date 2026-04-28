@@ -300,6 +300,20 @@ fetch_github_hashes() {
             hash=$(fetch_url_hash "$url")
             echo "hash = \"$hash\";"
             ;;
+        "OpenDS")
+            local url="https://github.com/Boomaa23/open-ds/releases/download/v${version}/open-ds-v${version}.jar"
+            local hash
+            hash=$(fetch_url_hash "$url")
+            echo "hash = \"$hash\";"
+            ;;
+        "FirstDriverStation")
+            local base_url="https://github.com/wpilibsuite/FirstDriverStation-Public/releases/download/v${version}"
+            local hash_x64 hash_arm64
+            hash_x64=$(fetch_url_hash "$base_url/FirstDriverStation-linux-x64-${version}.tar.gz")
+            hash_arm64=$(fetch_url_hash "$base_url/FirstDriverStation-linux-arm64-${version}.tar.gz")
+            echo "x86_64-linux = \"$hash_x64\";"
+            echo "aarch64-linux = \"$hash_arm64\";"
+            ;;
     esac
 }
 
@@ -419,8 +433,20 @@ update_hashes() {
                         fi
                     fi
                 done <<< "$hash_output"
+            elif [[ "$tool" == "FirstDriverStation" ]]; then
+                # FirstDriverStation: update per-arch hashes in sources block
+                while IFS= read -r hash_line; do
+                    if [[ "$hash_line" =~ ^([a-z0-9_-]+)\ =\ \"([^\"]+)\"\;$ ]]; then
+                        local arch="${BASH_REMATCH[1]}"
+                        local hash_val="${BASH_REMATCH[2]}"
+                        awk -v arch="$arch" -v hash="$hash_val" '
+                        $0 ~ "\"" arch "\"" { found=1 }
+                        found && /hash = / { gsub(/hash = "[^"]*"/, "hash = \"" hash "\""); found=0 }
+                        { print }
+                        ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+                    fi
+                done <<< "$hash_output"
             else
-                # Other packages use artifactHashes block
                 local temp_file
                 temp_file=$(mktemp)
                 echo "artifactHashes = {" > "$temp_file"
@@ -599,6 +625,8 @@ update_all_packages() {
         ["pathplanner"]="mjansen4857/pathplanner:pkgs/pathplanner/package.nix:PathPlanner"
         ["vscode-wpilib"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/vscode-wpilib.nix:vscode-wpilib"
         ["wpilib-utility"]="wpilibsuite/vscode-wpilib:pkgs/wpilib/wpilib-utility.nix:wpilib-utility"
+        ["firstdriverstation"]="wpilibsuite/FirstDriverStation-Public:pkgs/wpilib/firstdriverstation/package.nix:FirstDriverStation"
+        ["opends"]="Boomaa23/open-ds:pkgs/opends/package.nix:OpenDS"
     )
 
     for package in "${!github_packages[@]}"; do
