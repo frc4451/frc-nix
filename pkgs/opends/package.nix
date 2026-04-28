@@ -6,7 +6,9 @@
   makeWrapper,
   lib,
   libxkbcommon,
-  xorg,
+  libx11,
+  libxtst,
+  libxt,
 }:
 stdenv.mkDerivation rec {
   name = "OpenDS";
@@ -18,7 +20,7 @@ stdenv.mkDerivation rec {
   };
   dontUnpack = true;
   nativeBuildInputs = [makeWrapper autoPatchelfHook jre];
-  buildInputs = [libxkbcommon xorg.libX11 xorg.libXtst xorg.libXt];
+  buildInputs = [libxkbcommon libx11 libxtst libxt];
   installPhase = ''
     mkdir -pv $out/share/java $out/bin
 
@@ -30,7 +32,7 @@ stdenv.mkDerivation rec {
     makeWrapper ${jre}/bin/java $out/bin/OpenDS \
       --add-flags "-Djnativehook.lib.path=/tmp" \
       --add-flags "-jar $out/share/java/${name}-${version}.jar" \
-      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [libxkbcommon xorg.libX11 xorg.libXtst xorg.libXt]}
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [libxkbcommon libx11 libxtst libxt]}
 
   '';
 
