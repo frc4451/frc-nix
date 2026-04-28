@@ -18,7 +18,7 @@ in
     environment.systemPackages = [ pkgs.wpilib.firstdriverstation ];
 
     security.wrappers.FirstDriverStation = {
-      source = "${pkgs.firstdriverstation}/bin/FirstDriverStation";
+      source = "${pkgs.wpilib.firstdriverstation}/bin/FirstDriverStation";
       group = "input";
       permissions = "u+rx,g+rx,g+s";
     };
