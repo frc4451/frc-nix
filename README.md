@@ -19,14 +19,5 @@ This repository includes automated package updates:
 ## Docs
 
 - [Why doesn't my Simulation GUI work?](/docs/simulation-gui.md)
+- [FIRST Driver Station (NixOS)](/docs/firstdriverstation.md)
 
-## FIRST Driver Station (NixOS)
-
-To use the FIRST Driver Station you need your user to be in the input group and to enable the module for udev rules and a security wrapper around the package.
-
-```nix
-{
-  imports = [ frc-nix.nixosModules.firstdriverstation ];
-  programs.firstdriverstation.enable = true;
-}
-```
