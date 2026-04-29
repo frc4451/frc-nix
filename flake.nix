@@ -37,8 +37,6 @@
 
       overlays.default = import ./overlay.nix;
 
-      nixosModules.firstdriverstation = import ./modules/firstdriverstation.nix;
-
       legacyPackages = forEachPkgs (pkgs: import ./default.nix { inherit pkgs; });
       packages = forEachPkgs (
         pkgs:
