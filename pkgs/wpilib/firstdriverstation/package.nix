@@ -129,8 +129,15 @@ stdenv.mkDerivation (finalAttrs: {
       exec = name;
       comment = finalAttrs.meta.description or null;
       icon = name;
-      categories = [ "Robotics" "Development" ];
-      keywords = [ "FRC" "FTC" "DriverStation" ];
+      categories = [
+        "Robotics"
+        "Development"
+      ];
+      keywords = [
+        "FRC"
+        "FTC"
+        "DriverStation"
+      ];
     })
   ];
   meta = {
