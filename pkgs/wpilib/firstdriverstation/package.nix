@@ -11,6 +11,7 @@
   alsa-lib,
   angle,
   avahi,
+  dhcpcd,
   fontconfig,
   gtk3,
   icu,
@@ -28,25 +29,25 @@
   libxfixes,
   libxi,
   libxrandr,
+  openssl_legacy,
   pipewire,
   sndio,
   udev,
   webkitgtk_4_1,
-  dhcpcd,
 }:
 let
   pname = "firstdriverstation";
-  version = "2027.0.0-alpha-2";
+  version = "2027.0.0-alpha-3";
 
   sourceURL = "https://github.com/wpilibsuite/FirstDriverStation-Public/releases/download/v${version}";
   sources = {
     "x86_64-linux" = fetchurl {
       url = "${sourceURL}/FirstDriverStation-linux-x64-${version}.tar.gz";
-      hash = "sha256-MnDV6FQSYoPa3jQrXu+aD6UeNB9ZO4MtCHOqHTn5ei8=";
+      hash = "sha256-FiiE/YN1UImjh5DbOw/RH3lhoVZjU+HfTHw5zy9CgQQ=";
     };
     "aarch64-linux" = fetchurl {
       url = "${sourceURL}/FirstDriverStation-linux-arm64-${version}.tar.gz";
-      hash = "sha256-CZ5VAlCIyz0mA+IjpbqRSjdSoozomCfhs46txbKhdag=";
+      hash = "sha256-4nVYcrjjMRuz0GhjSi+6mRGG3ytmxQBxynUUtFCRCp4=";
     };
   };
 in
@@ -122,7 +123,8 @@ stdenv.mkDerivation (finalAttrs: {
       install -Dm644 ${../wpilib_logo.svg} $out/share/icons/hicolor/scalable/apps/FirstDriverStation.svg
 
       makeBinaryWrapper ${installPath}/FirstDriverStation $out/bin/FirstDriverStation \
-        --prefix PATH : ${lib.makeBinPath [ dhcpcd ]}
+        --prefix PATH : ${lib.makeBinPath [ dhcpcd ]} \
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl_legacy ]}
 
       runHook postInstall
     '';
