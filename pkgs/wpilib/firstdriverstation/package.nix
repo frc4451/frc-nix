@@ -37,17 +37,17 @@
 }:
 let
   pname = "firstdriverstation";
-  version = "2027.0.0-alpha-3";
+  version = "2027.0.0-alpha-4";
 
   sourceURL = "https://github.com/wpilibsuite/FirstDriverStation-Public/releases/download/v${version}";
   sources = {
     "x86_64-linux" = fetchurl {
       url = "${sourceURL}/FirstDriverStation-linux-x64-${version}.tar.gz";
-      hash = "sha256-FiiE/YN1UImjh5DbOw/RH3lhoVZjU+HfTHw5zy9CgQQ=";
+      hash = "sha256-rS/6C0K72wenhdb6TG7O4icVraIaaoCkoxK7CSFldt4=";
     };
     "aarch64-linux" = fetchurl {
       url = "${sourceURL}/FirstDriverStation-linux-arm64-${version}.tar.gz";
-      hash = "sha256-4nVYcrjjMRuz0GhjSi+6mRGG3ytmxQBxynUUtFCRCp4=";
+      hash = "sha256-nAJSqGkf5LJvi+cznNrFMkHDhA87M3kJoeJ9/niQPyM=";
     };
   };
 in
