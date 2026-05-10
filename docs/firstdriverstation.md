@@ -10,13 +10,11 @@ users.users.alice.extraGroups = [ "input" ];
 
 This allows it to access the keyboard for global input and E-Stop functionality.
 
-You can also install the udev rules from the documentation like so:
+Some controllers might require your user to have access to `/dev/hidraw*` in order to use their full functionality. In this case, you can install the udev rules which give the active user read access to hidraw with the following:
 
 ```nix
 services.udev.packages = [ pkgs.wpilib.firstdriverstation ];
 ```
-
-However, it's currently unclear whether these udev rules are actually required, as the DS appears to work fine without them.
 
 ## Scaling
 
