@@ -132,7 +132,7 @@ stdenv.mkDerivation (finalAttrs: {
   desktopItems = [
     (makeDesktopItem rec {
       name = "FirstDriverStation";
-      desktopName = name;
+      desktopName = "FIRST Driver Station";
       exec = name;
       comment = finalAttrs.meta.description or null;
       icon = name;
