@@ -2,15 +2,19 @@
 
 ## Permissions
 
+### Input
+
 Currently, in order to use the FIRST Driver Station on NixOS, you need your user to be in the input group:
 
 ```nix
 users.users.alice.extraGroups = [ "input" ];
 ```
 
-This allows it to access the keyboard for global input and E-Stop functionality.
+This allows it access to the keyboard for global input and E-Stop functionality.
 
-Some controllers might require your user to have access to `/dev/hidraw*` in order to use their full functionality. In this case, you can install the udev rules which give the active user read access to hidraw with the following:
+### hidraw
+
+Some controllers require your user to have access to `/dev/hidraw*` in order to use their full functionality. (e.g. the touchpad on a PS5 DualSense controller.) In this case, you will need to install the udev rules which give the active user read access to `/dev/hidraw*`:
 
 ```nix
 services.udev.packages = [ pkgs.wpilib.firstdriverstation ];
