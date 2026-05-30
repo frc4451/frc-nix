@@ -89,10 +89,7 @@ buildNpmPackage (finalAttrs: {
     ;
 
   makeCacheWritable = true;
-  npmFlags = [
-    "--legacy-peer-deps"
-    "--ignore-scripts"
-  ];
+  npmFlags = [ "--ignore-scripts" ];
 
   buildPhase = ''
     runHook preBuild
