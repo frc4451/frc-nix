@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   flutter,
   fetchFromGitHub,
   copyDesktopItems,
@@ -60,6 +61,7 @@ flutter.buildFlutterApplication rec {
     description = "A simple yet powerful motion profile generator for FRC robots";
     homepage = "https://pathplanner.dev";
     license = licenses.mit;
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = platforms.all;
   };
 }

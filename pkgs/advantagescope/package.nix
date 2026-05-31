@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   buildNpmPackage,
   fetchFromGitHub,
   emscripten,
@@ -150,7 +151,8 @@ buildNpmPackage (finalAttrs: {
     description = "AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by Team 6328";
     homepage = "https://docs.advantagescope.org/";
     license = lib.licenses.bsd3;
-    maintainers = [
+    maintainers = with frc-nix-maintainers; [
+      taciturnaxolotl
       {
         name = "me-it-is";
         github = "me-it-is";

@@ -1,4 +1,4 @@
-{ buildJavaTool }:
+{ buildJavaTool, frc-nix-maintainers }:
 
 buildJavaTool {
   pname = "pathweaver";
@@ -17,5 +17,6 @@ buildJavaTool {
 
   meta = {
     description = "A trajectory generation suite that for FRC teams to generate and follow trajectories";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
   };
 }

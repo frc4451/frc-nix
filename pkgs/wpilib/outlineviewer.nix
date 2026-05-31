@@ -1,4 +1,8 @@
-{ buildBinTool, allwpilibSources }:
+{
+  buildBinTool,
+  allwpilibSources,
+  frc-nix-maintainers,
+}:
 
 buildBinTool {
   pname = "outlineviewer";
@@ -14,5 +18,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/outlineviewer/src/main/native/resources/ov-512.png";
 
-  meta.description = "A utility used to view, modify and add to the contents of NetworkTables";
+  meta = {
+    description = "A utility used to view, modify and add to the contents of NetworkTables";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }

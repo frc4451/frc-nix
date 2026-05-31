@@ -2,6 +2,7 @@
   buildBinTool,
   avahi,
   allwpilibSources,
+  frc-nix-maintainers,
 }:
 
 buildBinTool {
@@ -20,5 +21,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/roborioteamnumbersetter/src/main/native/resources/rtns-512.png";
 
-  meta.description = "A trajectory generation suite for FRC teams";
+  meta = {
+    description = "A trajectory generation suite for FRC teams";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }

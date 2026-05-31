@@ -2,6 +2,7 @@
   buildBinTool,
   allwpilibSources,
   gfortran,
+  frc-nix-maintainers,
 }:
 
 buildBinTool {
@@ -20,5 +21,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/wpical/src/main/native/resources/wpical-512.png";
 
-  meta.description = "Field Calibration Tool";
+  meta = {
+    description = "Field Calibration Tool";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }
