@@ -108,13 +108,16 @@ CI will reject PRs with unformatted files, so run this before pushing.
 - Follow the structure of existing packages in the repository.
 - Use `buildBinTool` or `buildJavaTool` where applicable.
 - Set `meta` fields: at minimum `description`, `homepage`, `license`, `platforms`, and `maintainers`.
-- Add yourself to the `maintainers` field using `self.lib.maintainers`:
+- Add yourself to the `maintainers` field. Packages are given `frc-nix-maintainers` as a `callPackage` argument, so take it in the argument set:
 
   ```nix
-  meta.maintainers = [ self.lib.maintainers.your-github-handle ];
+  { stdenv, frc-nix-maintainers }:
+  # ...
+  meta.maintainers = with frc-nix-maintainers; [ your-github-handle ];
   ```
 
-  If you are not yet listed, add yourself to [`lib/maintainers.nix`](lib/maintainers.nix) first.
+  If you are not yet listed, add yourself to [`lib/frc-nix-maintainers.nix`](lib/frc-nix-maintainers.nix) first.
+  Use `inherit (lib.maintainers) yourhandle;` if you're already in nixpkgs, or a full attrset otherwise.
 - Verify the package builds before opening a PR:
 
   ```sh
