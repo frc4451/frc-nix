@@ -1,4 +1,8 @@
-{ buildBinTool, allwpilibSources }:
+{
+  buildBinTool,
+  allwpilibSources,
+  frc-nix-maintainers,
+}:
 
 buildBinTool {
   pname = "sysid";
@@ -14,5 +18,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/sysid/src/main/native/resources/sysid-512.png";
 
-  meta.description = "A tool for performing system identification on FRC robots";
+  meta = {
+    description = "A tool for performing system identification on FRC robots";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }

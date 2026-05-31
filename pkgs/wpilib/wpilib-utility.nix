@@ -1,6 +1,7 @@
 {
   stdenv,
   lib,
+  frc-nix-maintainers,
   fetchurl,
   autoPatchelfHook,
   makeBinaryWrapper,
@@ -63,6 +64,7 @@ stdenv.mkDerivation rec {
     description = "WPILib VSCode Utility (Standalone)";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib/tree/main/wpilib-utility-standalone";
     license = licenses.bsd3;
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = [
       "x86_64-linux"
       "aarch64-linux"

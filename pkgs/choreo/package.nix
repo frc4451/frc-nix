@@ -1,6 +1,7 @@
 {
   stdenv,
   lib,
+  frc-nix-maintainers,
   fetchurl,
   autoPatchelfHook,
   copyDesktopItems,
@@ -75,6 +76,7 @@ stdenv.mkDerivation {
     homepage = "https://sleipnirgroup.github.io/Choreo/";
     license = licenses.bsd3;
     mainProgram = "choreo";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = [ "x86_64-linux" ];
   };
 }

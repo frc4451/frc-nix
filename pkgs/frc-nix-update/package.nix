@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   writeShellApplication,
   curl,
   jq,
@@ -38,7 +39,7 @@ writeShellApplication {
     '';
     homepage = "https://github.com/frc4451/frc-nix";
     license = licenses.mit;
-    maintainers = [ ];
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = platforms.unix;
     mainProgram = "frc-nix-update";
   };

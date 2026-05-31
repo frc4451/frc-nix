@@ -4,6 +4,7 @@
   fetchurl,
   unzip,
   lib,
+  frc-nix-maintainers,
 }:
 vscode-utils.buildVscodeExtension rec {
   version = "2026.2.1";
@@ -36,6 +37,7 @@ vscode-utils.buildVscodeExtension rec {
     description = "Visual Studio Code WPILib extension";
     homepage = "https://github.com/wpilibsuite/vscode-wpilib";
     license = licenses.bsd3;
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = [
       "x86_64-linux"
       "x86_64-darwin"
