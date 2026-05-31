@@ -1,0 +1,37 @@
+name: Auto-request package maintainers
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  request-maintainers:
+    runs-on: ubuntu-latest
+    steps:
+      # `pull_request` hands forks a read-only token, so commenting 403s on the
+      # PRs this exists for. `pull_request_target` gets a writable one, at the
+      # cost of running with secrets in scope: check out the base branch and
+      # only ever diff the head, never evaluate or execute it.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch PR head
+        run: git fetch --no-tags origin "refs/pull/${{ github.event.pull_request.number }}/head:pr-head"
+
+      - uses: cachix/install-nix-action@v30
+      - uses: DeterminateSystems/flakehub-cache-action@main
+
+      - name: Request maintainer reviews
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          .github/scripts/request-maintainer-reviews.sh \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ github.event.pull_request.base.ref }}" \
+            pr-head
