@@ -24,4 +24,10 @@
     taciturnaxolotl
     nullcube
     ;
+
+  me-it-is = {
+    name = "me-it-is";
+    github = "me-it-is";
+    githubId = 188520719;
+  };
 }
