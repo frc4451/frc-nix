@@ -1,7 +1,7 @@
 {
   lib,
   frc-nix-maintainers,
-  flutter,
+  flutter341,
   fetchFromGitHub,
   copyDesktopItems,
   stdenv,
@@ -9,7 +9,9 @@
   libuuid,
   makeDesktopItem,
 }:
-flutter.buildFlutterApplication rec {
+# pinned: pathplanner's pubspec.lock holds meta 1.16.0, and flutter >= 3.47
+# uses @awaitNotRequired from meta 1.17
+flutter341.buildFlutterApplication rec {
   pname = "pathplanner";
   version = "2026.1.2";
 
