@@ -1,6 +1,5 @@
 {
   lib,
-  frc-nix-maintainers,
   flutter341,
   fetchFromGitHub,
   copyDesktopItems,
