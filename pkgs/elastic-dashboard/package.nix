@@ -4,6 +4,7 @@
   autoPatchelfHook,
   wrapGAppsHook3,
   lib,
+  frc-nix-maintainers,
   unzip,
   makeDesktopItem,
   copyDesktopItems,
@@ -66,6 +67,7 @@ stdenv.mkDerivation rec {
     description = "A simple and modern dashboard for FRC";
     homepage = "https://github.com/Gold872/elastic_dashboard";
     license = licenses.mit;
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = platforms.all;
   };
 }

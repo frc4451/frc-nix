@@ -1,4 +1,4 @@
-{ buildJavaTool }:
+{ buildJavaTool, frc-nix-maintainers }:
 
 buildJavaTool {
   pname = "smartdashboard";
@@ -14,6 +14,7 @@ buildJavaTool {
 
   meta = {
     description = "A simple and resource-efficient FRC dashboard";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = [
       "x86_64-linux"
       "x86_64-darwin"

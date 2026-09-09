@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   stdenv,
   allwpilibSources,
   fetchurl,
@@ -51,6 +52,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "An application which generates FRC robot code";
     license = licenses.bsd3;
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = platforms.all;
   };
 }

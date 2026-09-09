@@ -1,4 +1,8 @@
-{ buildBinTool, allwpilibSources }:
+{
+  buildBinTool,
+  allwpilibSources,
+  frc-nix-maintainers,
+}:
 
 buildBinTool {
   pname = "glass";
@@ -14,5 +18,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/glass/src/app/native/resources/glass-512.png";
 
-  meta.description = "A dashboard and data visualization tool for FRC robots";
+  meta = {
+    description = "A dashboard and data visualization tool for FRC robots";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }

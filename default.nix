@@ -1,6 +1,9 @@
 {
   pkgs ? import <nixpkgs>,
 }:
+let
+  frc-nix-maintainers = import ./lib/frc-nix-maintainers.nix { inherit (pkgs) lib; };
+in
 /**
   https://github.com/NixOS/nixpkgs/blob/0726f235730331846135184e71d1d1bc3a4b49ad/lib/filesystem.nix#L235-L361
 
@@ -12,9 +15,9 @@
   my-packages
   ├── a.nix
   ├── b
-  │  ├── my-extra-feature.patch
-  │  ├── package.nix
-  │  └── support-definitions.nix
+  │   ├── my-extra-feature.patch
+  │   ├── package.nix
+  │   └── support-definitions.nix
   └── my-namespace
    ├── c.nix
    └── d
@@ -32,6 +35,7 @@
   }
 */
 pkgs.lib.packagesFromDirectoryRecursive {
-  inherit (pkgs) callPackage newScope;
+  callPackage = pkgs.newScope { inherit frc-nix-maintainers; };
+  newScope = extra: pkgs.newScope ({ inherit frc-nix-maintainers; } // extra);
   directory = ./pkgs;
 }

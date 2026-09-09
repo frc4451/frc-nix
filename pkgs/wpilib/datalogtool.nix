@@ -1,4 +1,8 @@
-{ buildBinTool, allwpilibSources }:
+{
+  buildBinTool,
+  allwpilibSources,
+  frc-nix-maintainers,
+}:
 
 buildBinTool {
   pname = "datalogtool";
@@ -14,5 +18,8 @@ buildBinTool {
 
   iconPng = "${allwpilibSources}/datalogtool/src/main/native/resources/dlt-512.png";
 
-  meta.description = "A tool for downloading logs from FRC robots";
+  meta = {
+    description = "A tool for downloading logs from FRC robots";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+  };
 }

@@ -37,6 +37,8 @@
 
       overlays.default = import ./overlay.nix;
 
+      lib.frc-nix-maintainers = import ./lib/frc-nix-maintainers.nix { inherit lib; };
+
       legacyPackages = forEachPkgs (pkgs: import ./default.nix { inherit pkgs; });
       packages = forEachPkgs (
         pkgs:

@@ -1,4 +1,4 @@
-{ buildJavaTool }:
+{ buildJavaTool, frc-nix-maintainers }:
 
 buildJavaTool {
   pname = "shuffleboard";
@@ -17,5 +17,6 @@ buildJavaTool {
 
   meta = {
     description = "A straightforward, customizable driveteam-focused dashboard for FRC";
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
   };
 }
