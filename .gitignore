@@ -1,5 +1,5 @@
 # Nix/NixOS
-result
+result*
 *.qcow2
 
 # Development
