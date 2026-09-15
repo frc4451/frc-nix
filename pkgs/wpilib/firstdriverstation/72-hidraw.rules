@@ -1,0 +1,2 @@
+# Grant access to all hidraw devices for the active user
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", TAG+="uaccess"
