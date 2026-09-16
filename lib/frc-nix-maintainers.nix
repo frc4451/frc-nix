@@ -23,4 +23,10 @@ with lib.maintainers;
 
 {
   inherit taciturnaxolotl;
+
+  artixbtw = {
+    name = "ArtixBTW";
+    github = "ArtixBTW";
+    githubId = 44449514;
+  };
 }
