@@ -46,7 +46,7 @@ let
     owner = "Mechanical-Advantage";
     repo = "AdvantageScope";
     tag = "v${version}";
-    hash = "sha256-w12dxJyR+HmCKb1TE+W5qfd1Uyf+wam0AGachv7UbjI=";
+    hash = "sha256-/444Hcpx+YrD8sUGgV4rTWhLeyB61j6QPcS36GT0ZZE=";
   };
 
   patches = [
