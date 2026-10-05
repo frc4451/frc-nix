@@ -108,7 +108,6 @@ get_wpilib_latest() {
     latest=$(curl -s "https://frcmaven.wpi.edu/artifactory/api/storage/$branch/edu/wpi/first/wpilibj/wpilibj-java" | \
         jq -r '.children[] | select(.folder == true) | .uri' | \
         sed 's|^/||; s|/$||' | \
-        grep -v 'beta\|alpha\|rc' | \
         sort -V | \
         tail -1)
     verbose "Latest WPILib version: $latest"
