@@ -10,7 +10,7 @@ buildNpmPackage (finalAttrs: {
   inherit version src;
 
   sourceRoot = "${finalAttrs.src.name}/docs";
-  npmDepsHash = "sha256-HQW8MXBRnVATMKwmhZQbaOb1Img/q0BUXOR4A3BlMDE=";
+  npmDepsHash = "sha256-dBe0n8+eqWF2HacQpEBkroHtvuGfiPlBJANdSp0s2nY=";
 
   buildPhase = ''
     npm run build-embed
