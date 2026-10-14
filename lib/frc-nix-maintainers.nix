@@ -20,14 +20,28 @@
 { lib }:
 
 {
+<<<<<<< HEAD
   inherit (lib.maintainers)
     taciturnaxolotl
     nullcube
     ;
+=======
+  inherit taciturnaxolotl;
+>>>>>>> bf2d97e (Add maintainer)
 
   me-it-is = {
     name = "me-it-is";
     github = "me-it-is";
+<<<<<<< HEAD
     githubId = 188520719;
+=======
+    githubId = "188520719";
+  };
+  
+  blaze-developer = {
+    name = "blaze-developer";
+    github = "blaze-developer";
+    githubId = "73793525";
+>>>>>>> bf2d97e (Add maintainer)
   };
 }
