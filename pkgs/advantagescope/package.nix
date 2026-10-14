@@ -153,6 +153,7 @@ buildNpmPackage (finalAttrs: {
     license = lib.licenses.bsd3;
     maintainers = with frc-nix-maintainers; [
       taciturnaxolotl
+      blaze-developer
       me-it-is
     ];
     platforms = [
