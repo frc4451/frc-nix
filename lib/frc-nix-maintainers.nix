@@ -28,6 +28,12 @@
   me-it-is = {
     name = "me-it-is";
     github = "me-it-is";
-    githubId = 188520719;
+    githubId = "188520719";
+  };
+  
+  blaze-developer = {
+    name = "blaze-developer";
+    github = "blaze-developer";
+    githubId = "73793525";
   };
 }
