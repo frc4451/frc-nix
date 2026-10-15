@@ -38,17 +38,33 @@
   pango,
   systemdLibs,
   udev,
+  xdg-utils,
+  zlib,
 }:
 let
   pname = "rev-hardware-client-2";
-  version = "1.0.7";
+  version = "1.4.2";
+
+  arch =
+    {
+      x86_64-linux = {
+        name = "amd64";
+        hash = "sha256-9FI8UhMI11SvNKF5+V/hlNNQYzeqCwqQZr1I5bz9nDU=";
+      };
+      aarch64-linux = {
+        name = "aarch64";
+        hash = "sha256-orWG71k7ySOz2p7jaCUPRj+so0RGydz1MLgB4BXJXGA=";
+      };
+    }
+    .${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 
   rhc2-unwrapped = stdenv.mkDerivation (finalAttrs: {
     pname = "${pname}-unwrapped";
     inherit version;
     src = fetchurl {
-      url = "https://rhc2.revrobotics.com/download/rev-hardware-client-1.0.7-linux-amd64.tar.gz";
-      hash = "sha256-dIn32bBVarRVoHSG0cZiIt5W33Q5YuQToaZvN/Q8p7s=";
+      url = "https://rhc2.revrobotics.com/download/rev-hardware-client-${version}-linux-${arch.name}.tar.gz";
+      name = "${pname}-${version}-src-${arch.name}.tar.gz";
+      inherit (arch) hash;
     };
 
     dontBuild = true;
@@ -76,7 +92,6 @@ buildFHSEnv {
     atk
     cairo
     cups
-    # cups.lib
     dbus
     expat
     fontconfig
@@ -106,6 +121,8 @@ buildFHSEnv {
     stdenv.cc.cc
     systemdLibs
     udev
+    xdg-utils
+    zlib
   ];
 
   runScript = "rev-hardware-client";
@@ -118,9 +135,15 @@ buildFHSEnv {
   meta = {
     description = "Hardware client for REV devices";
     homepage = "https://docs.revrobotics.com/rev-hardware-client-2";
+    downloadPage = "https://rhc2.revrobotics.com/download/download.html";
+    changelog = "https://docs.revrobotics.com/rev-hardware-client-2/rhc2/overview/changelog";
     license = lib.licenses.unfree;
     maintainers = with lib.maintainers; [ nullcube ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-    platforms = [ "x86_64-linux" ];
+    platforms = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
+    mainProgram = "rev-hardware-client-2";
   };
 }
