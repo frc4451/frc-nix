@@ -12,11 +12,11 @@
 }:
 let
   pname = "choreo";
-  version = "2026.0.3";
+  version = "2027.0.0-alpha-3";
 
   src = fetchurl {
     url = "https://github.com/SleipnirGroup/Choreo/releases/download/v${version}/Choreo-v${version}-Linux-x86_64-standalone.zip";
-    hash = "sha256-5w1CHQZ+0/rq6uStU3q36C6rzpg1TmlIILYSGQqx3ks=";
+    hash = "sha256-3o/Jp1VII65IJSFcU9GHqk9SEiwEW5pXkYHMngAKnZs=";
   };
 
   icon = fetchurl {
@@ -76,7 +76,7 @@ stdenv.mkDerivation {
     homepage = "https://sleipnirgroup.github.io/Choreo/";
     license = licenses.bsd3;
     mainProgram = "choreo";
-    maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+    maintainers = with frc-nix-maintainers; [ taciturnaxolotl blaze-developer ];
     platforms = [ "x86_64-linux" ];
   };
 }

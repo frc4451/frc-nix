@@ -37,7 +37,7 @@
 =======
     githubId = "188520719";
   };
-  
+
   blaze-developer = {
     name = "blaze-developer";
     github = "blaze-developer";
