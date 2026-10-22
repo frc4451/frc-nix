@@ -22,5 +22,6 @@
 {
   inherit (lib.maintainers)
     taciturnaxolotl
+    nullcube
     ;
 }
