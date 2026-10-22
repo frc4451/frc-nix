@@ -28,11 +28,13 @@
   libxext,
   libxfixes,
   libxi,
+  libxkbcommon,
   libxrandr,
   openssl_legacy,
   pipewire,
   sndio,
   udev,
+  wayland,
   webkitgtk_4_1,
 }:
 let
@@ -99,9 +101,12 @@ stdenv.mkDerivation (finalAttrs: {
   runtimeDependencies = [
     gtk3
     icu
+    libGL
     libice
     libsm
     libx11
+    libxkbcommon
+    wayland
     webkitgtk_4_1
   ];
 
