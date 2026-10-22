@@ -20,14 +20,6 @@ Some controllers require your user to have access to `/dev/hidraw*` in order to 
 services.udev.packages = [ pkgs.wpilib.firstdriverstation ];
 ```
 
-## Scaling
-
-The Driver Station uses the Avalonia framework, and runs through XWayland. On Wayland with a HiDPI screen this might cause the app to be too small to be readable. The scaling of the app can be controlled by the `AVALONIA_GLOBAL_SCALE_FACTOR` variable:
-
-```nix
-environment.sessionVariables.AVALONIA_GLOBAL_SCALE_FACTOR = 2;
-```
-
 ## Dashboards
 
 You will need to configure a custom dashboard override for the driver station in order to use the elastic dashboard provided by frc-nix.
