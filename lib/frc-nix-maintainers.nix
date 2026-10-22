@@ -19,8 +19,8 @@
 
 { lib }:
 
-with lib.maintainers;
-
 {
-  inherit taciturnaxolotl;
+  inherit (lib.maintainers)
+    taciturnaxolotl
+    ;
 }
