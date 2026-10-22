@@ -115,12 +115,15 @@ stdenv.mkDerivation (finalAttrs: {
       runHook preInstall
 
       install -Dm744 ./FirstDriverStation ${installPath}/FirstDriverStation
-      install -Dm744 ./libHarfBuzzSharp.so ${installPath}/libHarfBuzzSharp.so
-      install -Dm744 ./libSkiaSharp.so ${installPath}/libSkiaSharp.so
 
       install -Dm644 ./License.txt $out/share/doc/FirstDriverStation/License.txt
       install -Dm644 ${./72-hidraw.rules} $out/etc/udev/rules.d/72-hidraw.rules
       install -Dm644 ${../wpilib_logo.svg} $out/share/icons/hicolor/scalable/apps/FirstDriverStation.svg
+
+      # Copied to installPath since the program requires them and they are
+      # pulled from the local directory, not from LD_LIBRARY_PATH
+      install -Dm744 ./libHarfBuzzSharp.so ${installPath}/libHarfBuzzSharp.so
+      install -Dm744 ./libSkiaSharp.so ${installPath}/libSkiaSharp.so
 
       makeBinaryWrapper ${installPath}/FirstDriverStation $out/bin/FirstDriverStation \
         --prefix PATH : ${lib.makeBinPath [ dhcpcd ]} \
@@ -147,6 +150,7 @@ stdenv.mkDerivation (finalAttrs: {
       ];
     })
   ];
+
   meta = {
     description = "Enables users to control their FTC and FRC robots.";
     homepage = "https://github.com/wpilibsuite/FirstDriverStation-Public/";
