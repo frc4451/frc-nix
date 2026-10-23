@@ -8,15 +8,15 @@
 }:
 let
   pname = "limelight-hardware-manager";
-  version = "2.0.12";
+  version = "2.0.13";
 
   system = stdenv.hostPlatform.system;
   arch = lib.removeSuffix "-linux" system;
   fileName = "LimelightHardwareManager-${arch}_${lib.strings.replaceString "." "_" version}.AppImage";
 
   hashes = {
-    "x86_64-linux" = "sha256-PzIXk5jC2p2pZ6DUF4vJSF2WNToO6/ghrQdi/d4benY=";
-    "aarch64-linux" = "sha256-moK4NZP21TCEfS/T7P2QdC6WAIcP1lt0aAqP0WxTmCA=";
+    "x86_64-linux" = "sha256-TpwDo/n4I4PCgX3ptKxZYZV7Cd/NeDOtMqLiZ1wOlqk=";
+    "aarch64-linux" = "sha256-uOoIU26v9HcjSloQiivFesTLxHjiUiW8oRy0/XVMmKI=";
   };
 in
 appimageTools.wrapType2 (finalAttrs: {
