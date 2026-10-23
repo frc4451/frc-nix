@@ -40,15 +40,21 @@ appimageTools.wrapType2 (finalAttrs: {
   };
 
   extraInstallCommands = ''
-    install -Dm444 ${finalAttrs.appimageContents}/limelight-hardware-manager.png -t $out/share/pixmaps
+    # Install udev rule for rpiboot permissions, activate with udev.packages
+    install -Dm644 ${./99-limelight-rpiboot.rules} $out/etc/udev/rules.d/99-limelight-rpiboot.rules
 
+    # Install and modify desktop entry
     install -Dm444 ${finalAttrs.appimageContents}/limelight-hardware-manager.desktop -t $out/share/applications
+    install -Dm444 ${finalAttrs.appimageContents}/limelight-hardware-manager.png -t $out/share/pixmaps
 
     substituteInPlace $out/share/applications/limelight-hardware-manager.desktop \
       --replace-fail 'Exec=/usr/bin/limelight-hardware-manager' 'Exec=${finalAttrs.meta.mainProgram}'
   '';
 
   extraPkgs = pkgs: [ pkgs.icu ];
+
+  # Allow the package to see the udev rules installed (for the green indicator)
+  extraBwrapArgs = [ "--ro-bind-try /etc/udev /etc/udev" ];
 
   meta = {
     mainProgram = "limelight-hardware-manager";
