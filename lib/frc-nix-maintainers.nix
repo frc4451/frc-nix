@@ -19,8 +19,15 @@
 
 { lib }:
 
-with lib.maintainers;
-
 {
-  inherit taciturnaxolotl;
+  inherit (lib.maintainers)
+    taciturnaxolotl
+    nullcube
+    ;
+
+  me-it-is = {
+    name = "me-it-is";
+    github = "me-it-is";
+    githubId = 188520719;
+  };
 }
