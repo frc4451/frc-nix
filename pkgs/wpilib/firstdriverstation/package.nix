@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   stdenv,
   autoPatchelfHook,
   copyDesktopItems,
@@ -160,7 +161,7 @@ stdenv.mkDerivation (finalAttrs: {
     description = "Enables users to control their FTC and FRC robots.";
     homepage = "https://github.com/wpilibsuite/FirstDriverStation-Public/";
     license = lib.licenses.unfree;
-    maintainers = with lib.maintainers; [ nullcube ];
+    maintainers = with frc-nix-maintainers; [ nullcube ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     platforms = [
       "x86_64-linux"
