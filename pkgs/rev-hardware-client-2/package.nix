@@ -1,5 +1,6 @@
 {
   lib,
+  frc-nix-maintainers,
   buildFHSEnv,
   stdenv,
   fetchurl,
@@ -138,7 +139,7 @@ buildFHSEnv {
     downloadPage = "https://rhc2.revrobotics.com/download/download.html";
     changelog = "https://docs.revrobotics.com/rev-hardware-client-2/rhc2/overview/changelog";
     license = lib.licenses.unfree;
-    maintainers = with lib.maintainers; [ nullcube ];
+    maintainers = with frc-nix-maintainers; [ nullcube ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     platforms = [
       "x86_64-linux"
