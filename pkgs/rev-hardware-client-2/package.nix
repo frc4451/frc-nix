@@ -45,6 +45,7 @@
 let
   pname = "rev-hardware-client-2";
   version = "1.4.2";
+  mainProgram = "rev-hardware-client";
 
   arch =
     {
@@ -75,7 +76,7 @@ let
 
       cp -r . $out/
       substituteInPlace $out/share/applications/com.revrobotics.revui.rev-hardware-client.desktop \
-      --replace-fail Exec=/usr/lib/rev-robotics/rev-hardware-client/bin/rev-hardware-client Exec=rev-hardware-client-2
+      --replace-fail 'Exec=/usr/lib/rev-robotics/rev-hardware-client/bin/${mainProgram}' 'Exec=${mainProgram}'
 
       runHook postInstall
     '';
@@ -126,12 +127,13 @@ buildFHSEnv {
     zlib
   ];
 
-  runScript = "rev-hardware-client";
-
   extraInstallCommands = ''
     mkdir -p $out/
     cp -r ${rhc2-unwrapped}/share $out/share
   '';
+
+  runScript = mainProgram;
+  executableName = mainProgram;
 
   meta = {
     description = "Hardware client for REV devices";
@@ -145,6 +147,6 @@ buildFHSEnv {
       "x86_64-linux"
       "aarch64-linux"
     ];
-    mainProgram = "rev-hardware-client-2";
+    inherit mainProgram;
   };
 }
