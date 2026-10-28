@@ -16,7 +16,7 @@ A GitHub account is required. This document assumes you are already comfortable 
 
 3. Make your changes, adhering to the [code conventions](#code-conventions) and [commit conventions](#commit-conventions) below.
 
-4. Push and [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) targeting `season/2026`, the current development branch.
+4. Push and [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) targeting `main`, the current development branch.
 
 5. Respond to review feedback. Keep the PR in a mergeable state throughout.
 
