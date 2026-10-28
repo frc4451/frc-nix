@@ -130,6 +130,7 @@ buildFHSEnv {
   extraInstallCommands = ''
     mkdir -p $out/
     cp -r ${rhc2-unwrapped}/share $out/share
+    install -Dm644 ${./99-rev-devices.rules} $out/etc/udev/rules.d/99-rev-devices.rules
   '';
 
   runScript = mainProgram;
