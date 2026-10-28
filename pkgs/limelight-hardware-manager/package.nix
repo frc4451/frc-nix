@@ -42,6 +42,7 @@ appimageTools.wrapType2 (finalAttrs: {
   extraInstallCommands = ''
     # Install udev rule for rpiboot permissions, activate with udev.packages
     install -Dm644 ${./99-limelight-rpiboot.rules} $out/etc/udev/rules.d/99-limelight-rpiboot.rules
+    install -Dm644 ${./70-limelight-flash.rules} $out/etc/udev/rules.d/70-limelight-flash.rules
 
     # Install and modify desktop entry
     install -Dm444 ${finalAttrs.appimageContents}/limelight-hardware-manager.desktop -t $out/share/applications
@@ -53,8 +54,11 @@ appimageTools.wrapType2 (finalAttrs: {
 
   extraPkgs = pkgs: [ pkgs.icu ];
 
-  # Allow the package to see the udev rules installed (for the green indicator)
-  extraBwrapArgs = [ "--ro-bind-try /etc/udev /etc/udev" ];
+  extraBwrapArgs = [
+    "--ro-bind-try /etc/udev /etc/udev" # Allow the app to see the udev rules installed (for the green indicator)
+    "--uid 0" # Tell the app that the user has root permissions to unlock the flash button
+    "--gid 0"
+  ];
 
   meta = {
     mainProgram = "limelight-hardware-manager";
