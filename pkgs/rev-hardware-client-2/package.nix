@@ -44,18 +44,18 @@
 }:
 let
   pname = "rev-hardware-client-2";
-  version = "1.4.2";
+  version = "1.4.3";
   mainProgram = "rev-hardware-client";
 
   arch =
     {
       x86_64-linux = {
         name = "amd64";
-        hash = "sha256-9FI8UhMI11SvNKF5+V/hlNNQYzeqCwqQZr1I5bz9nDU=";
+        hash = "sha256-aeiwKI0O95J1rE9/uGEg7Jg8xO9Pd4fPdz/ITYITfOU=";
       };
       aarch64-linux = {
         name = "aarch64";
-        hash = "sha256-orWG71k7ySOz2p7jaCUPRj+so0RGydz1MLgB4BXJXGA=";
+        hash = "sha256-2nFrPnKik5WKBM59oOIvsEAf+tIi1FeAqrE1RodaJf4=";
       };
     }
     .${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
