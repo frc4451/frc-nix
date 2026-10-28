@@ -34,7 +34,7 @@ buildNpmPackage (finalAttrs: {
 
   outputHashAlgo = "sha256";
   outputHashMode = "recursive";
-  outputHash = "sha256-ygt3JJfDkxiKbMFax19nR6r1oBsvV9DxBno3AE3O0B4=";
+  outputHash = "sha256-5jShGMIKG9FrrMsh7QoAPwEdNJz8PnV5kA5jXbqOSic=";
 
   buildInputs = [ nodejs ];
 })
