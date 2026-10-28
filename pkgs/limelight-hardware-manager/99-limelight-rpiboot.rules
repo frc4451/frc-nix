@@ -1,1 +1,2 @@
+# USB Boot permissions
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0a5c", MODE="0666", TAG+="uaccess"
