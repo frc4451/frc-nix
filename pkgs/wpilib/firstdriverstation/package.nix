@@ -133,7 +133,8 @@ stdenv.mkDerivation (finalAttrs: {
 
       makeBinaryWrapper ${installPath}/FirstDriverStation $out/bin/FirstDriverStation \
         --prefix PATH : ${lib.makeBinPath [ dhcpcd ]} \
-        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl_legacy ]}
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ openssl_legacy ]} \
+        --set DOTNET_hostBuilder__reloadConfigOnChange false # https://github.com/wpilibsuite/FirstDriverStation-Public/issues/92
 
       runHook postInstall
     '';
