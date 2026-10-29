@@ -1,0 +1,2 @@
+# Write permissions
+SUBSYSTEM=="block", ATTRS{idVendor}=="0a5c", ATTRS{idProduct}=="0104", TAG+="uaccess"

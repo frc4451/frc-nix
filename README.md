@@ -20,4 +20,4 @@ This repository includes automated package updates:
 
 - [Why doesn't my Simulation GUI work?](/docs/simulation-gui.md)
 - [FIRST Driver Station (NixOS)](/docs/firstdriverstation.md)
-
+- [Limelight Hardware Manager](/docs/limelight-hardware-manager.md)
