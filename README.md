@@ -19,4 +19,4 @@ This repository includes automated package updates:
 ## Docs
 
 - [Why doesn't my Simulation GUI work?](/docs/simulation-gui.md)
-
+- [AdvantageScope XR](/docs/advantagescopexr.md)
