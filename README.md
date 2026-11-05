@@ -21,3 +21,4 @@ This repository includes automated package updates:
 - [Why doesn't my Simulation GUI work?](/docs/simulation-gui.md)
 - [FIRST Driver Station (NixOS)](/docs/firstdriverstation.md)
 - [AdvantageScope XR](/docs/advantagescopexr.md)
+- [REV Hardware Client 2 (NixOS)](/docs/rev-hardware-client-2.md)
