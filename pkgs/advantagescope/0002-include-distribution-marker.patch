@@ -1,0 +1,13 @@
+diff --git a/src/main/electron/main.ts b/src/main/electron/main.ts
+index 96450b1a..9ca38a7c 100644
+--- a/src/main/electron/main.ts
++++ b/src/main/electron/main.ts
+@@ -2505,7 +2505,7 @@ function setupMenu() {
+ function createAboutWindow() {
+   let detailLines: string[] = [];
+   detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
+-  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
++  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328") + " (FRC Nix)");
+   detailLines.push("Platform: " + process.platform + "-" + process.arch);
+   detailLines.push("Build Date: " + BUILD_DATE);
+   detailLines.push("Electron: " + process.versions.electron);

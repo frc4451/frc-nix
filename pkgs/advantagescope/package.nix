@@ -54,6 +54,7 @@ let
     ./0001-fix-wasm-compile.patch
     ./0001-switch-youtube-dl-to-patch-with-package-lock.json.patch
     ./0002-use-yt-dlp-from-path.patch # https://github.com/Mechanical-Advantage/AdvantageScope/pull/460
+    ./0002-include-distribution-marker.patch
   ];
 
   fetchersAtters = {
