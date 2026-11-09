@@ -134,6 +134,7 @@ lib.extendMkDerivation {
           "aarch64-darwin"
         ];
         license = lib.licenses.bsd3;
+        problems.removal.message = "WPILib Java Programs will be removed in 2027. If you still need to use them, please use the `season/2026` branch of https://github.com/frc4451/frc-nix";
       }
       // meta;
     };
