@@ -8,7 +8,6 @@
   libGL,
   libx11,
   libxtst,
-  gtk2,
   copyDesktopItems,
   makeDesktopItem,
 }:
@@ -75,7 +74,6 @@ lib.extendMkDerivation {
           libGL
           libx11
           libxtst
-          gtk2
         ]
         ++ extraLibs
       );
