@@ -24,5 +24,6 @@ buildBinTool {
   meta = {
     description = "A trajectory generation suite for FRC teams";
     maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
+    problems.removal.message = "roborioteamnumbersetter will be removed in 2027. If you still need to use it, please use the `season/2026` branch of https://github.com/frc4451/frc-nix";
   };
 }
