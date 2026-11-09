@@ -70,5 +70,6 @@ stdenv.mkDerivation rec {
       "aarch64-linux"
       "armv7l-linux"
     ];
+    problems.removal.message = "wpilib-utility will be removed in 2027. If you still need to use it, please use the `season/2026` branch of https://github.com/frc4451/frc-nix";
   };
 }
