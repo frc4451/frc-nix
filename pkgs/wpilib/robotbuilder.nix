@@ -54,5 +54,6 @@ stdenv.mkDerivation rec {
     license = licenses.bsd3;
     maintainers = with frc-nix-maintainers; [ taciturnaxolotl ];
     platforms = platforms.all;
+    problems.removal.message = "WPILib Java Programs will be removed in 2027. If you still need to use them, please use the `season/2026` branch of https://github.com/frc4451/frc-nix";
   };
 }
