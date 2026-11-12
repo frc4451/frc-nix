@@ -30,7 +30,7 @@ flutter341.buildFlutterApplication rec {
     xz
   ]
   # provides libblkid on Linux
-  ++ lib.optionals stdenv.isLinux [ libuuid ];
+  ++ lib.optionals stdenv.hostPlatform.isLinux [ libuuid ];
 
   postUnpack = ''
     # Make the version shown in the GUI match the actual version instead of "0.0.0"
